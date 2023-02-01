@@ -69,7 +69,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Please enter a fasta and a structure file when running the file\n"
               "Example:\n"
-              "python test_strenc.py merged_test_file_30.fasta merged_test_file_30_pysster.txt")
+              "python test_strenc.py merged_test_file_30.fasta pysster_output/merged_test_file_30_pysster.txt")
     else:
         fasta_file_input = sys.argv[1]
         structure_input = sys.argv[2]

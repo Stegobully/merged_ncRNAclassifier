@@ -70,8 +70,8 @@ if __name__ == '__main__':
         struct_input = ""
         print("You will now need to enter the path to the corresponding structure file created by Pysster\n"
               "This file needs to have the ending 'pysster.txt'\n"
-              "For how to create new structure files see section XYZ of the readme\n")
-        while not (os.path.isfile(struct_input) & fasta_file_input.endswith("pysster.txt")):
+              "For how to create new structure files see section 'Pysster' of the readme\n")
+        while not (os.path.isfile(struct_input) & struct_input.endswith("pysster.txt")):
             struct_input = input("Please enter a valid path to a structure file\n")
 
     # Print output path. If the user wishes to test with provided sequences the necessary files are set to the default

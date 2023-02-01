@@ -114,6 +114,8 @@ if __name__ == '__main__':
     sequence_ids = sequence_df.index
 
     # Write output to file
+    if not os.path.isdir("results"):
+        os.mkdir("results")
     output_file = f"results/{fasta_file_input.split('.')[0]}_{model}_predictions.txt"
     output = open(output_file, "w")
     for id, pred, pred_probability in zip(sequence_ids, results, pred_probabilities):

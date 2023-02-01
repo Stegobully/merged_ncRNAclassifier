@@ -12,7 +12,7 @@ sequence as input with an ANN model using encoded graph features created by Grap
 
 # Installation
 
-Create a new virtual environment with Python >=3.9 with a tool of your choice (e.g. PyCharm). Clone the git repository into this folder and make sure you install the following packages:
+Create a new virtual environment with Python >=3.10 with a tool of your choice (e.g. PyCharm). Clone the git repository into this folder and make sure you install the following packages:
 
 |Package|Version|
 |---|---|
@@ -21,13 +21,10 @@ Create a new virtual environment with Python >=3.9 with a tool of your choice (e
 |matplotlib   |3.6.3   |
 |keras   |2.11   |
 |tensorflow   |2.11   |
-|forgi   |2.0.2   |
 |numpy   |1.24.1   |
 |scipy   |1.10.0   |
 |scikit-learn   |1.2.1   |
-|pysster   |1.2.1   |
 |plotnine   |0.10.1   |
-|mizani   |0.8.1   |
 
 # How to use
 
@@ -75,3 +72,25 @@ Example call: `python test_grenc.py path/to/fasta.fasta path/to/graph_enc.gspan.
 
 ### test_seqenc.py
 Example call: `python test_seqenc.py path/to/fasta.fasta`
+
+---
+
+## GraphProt
+To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will need to be able to execute `fasta2shrep_gspan.pl` and `EDeN`. To create the Graph Feature files execute:
+
+1. `path/to/fasta2shrep_gspan.pl -abstr -stdout -M 3 -wins '150,' -shift '25' -fasta {fasta_file} -t 3 | gzip > {gspan_file}`
+
+2. `path/to/EDeN -a FEATURE -i {gspan_file}`, 
+
+where fasta_file is the path to the fasta file you want to predict and gspan_file is a new file that ends in `.gspan.gz`
+Confirm the output file now ends in `.gspan.gz.feature`, then you are ready to predict the sequences from the fasta file.
+
+
+## Pysster
+To install Pysster, refer to https://github.com/budach/pysster. You need to be able to import and run `annotate_structures()`.
+
+`predict_structures(fasta_file, output_pysster.txt, annotate=True)`, 
+
+where fasta file is the corresponding file to oyur sequence. Make sure the Pysster output file ends in `_pysster.txt`.
+
+

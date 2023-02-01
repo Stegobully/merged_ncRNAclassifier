@@ -62,7 +62,7 @@ Next, you will be asked to provide the link to the structure file, unless you ch
 Lastly, the program will read in the `.fasta` file (and the structure file if needed) and predict with the chosen model. If the number of graph feature vectors in the provided `.feature` file and sequences in the `.fasta` file do not match, the program will throw an error before prediction. If prediction does not fail, the output is written to the corresponding file and if the option "test" was chosen, the plots are created and saved in the results folder.
 
 ## test_[model].py
-The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. There is no option to test known sequences, the output only consists of `_[model]_predictions.txt` file. The order of the entered file is not flexible. 
+The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. There is no option to test known sequences, the output only consists of `_[model]_predictions.txt` file. The order of the entered files is not flexible. 
 
 ### test_merged.py
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`

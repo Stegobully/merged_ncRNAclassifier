@@ -12,7 +12,7 @@ sequence as input with an ANN model using encoded graph features created by Grap
 
 # Installation
 
-Create a new virtual environment with a tool of your choice (e.g. PyCharm). Clone the git repository into this folder and make sure you install the following packages:
+Create a new virtual environment with Python >=3.9 with a tool of your choice (e.g. PyCharm). Clone the git repository into this folder and make sure you install the following packages:
 
 |Package|Version|
 |---|---|
@@ -31,9 +31,19 @@ Create a new virtual environment with a tool of your choice (e.g. PyCharm). Clon
 
 # How to use
 
-We provide five different executable python files, predict_ncRNAs.py and test_grenc.py, test_merged.py, test_seqenc.py and test_strenc.py. 
+We provide five different executable python files, ´predict_ncRNAs.py´ and ´test_grenc.py´, ´test_merged.py´, ´test_seqenc.py´ and ´test_strenc.py´. 
 
 ## predict_ncRNAs.py
 This program needs no additional parameters and should be run from console. The program will ask you, which of the four available models you want to test. Choices are:
 ### Merged
-This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For the highest accuracy you need 
+This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section "GraphProt".
+### StrEnc
+This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. 
+### SeqEnc
+This classifier is faster than Merged and StrEnc and works using just ´.fasta´ files as input. The accuracy is slightly lower due to the loss of information about secondary structure. 
+### GrEnc
+This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option.
+
+Once you have chosen a model, you will be asked whether you would like to classify new sequences or test the model with already classified sequences. 
+### new
+You will only need to provide a ´.fasta´ file and the secondary structure (if necessary). The output will be a file with the same name as the fasta file, but with ´_predictions.txt´ as a suffix. One line of this file may look like this: ´URS00019662A9_9685	lncRNA	0.9983231425285339´, where the first item is the sequence ID provided by the ´.fasta´ file (everything before the first space in the header), the second item is the predicted ncRNA type (one in lncRNA, miRNA, rRNA, snRNA, snoRNA, tRNA) and the third item is the probability output by the softmax function in the output layer of the model.

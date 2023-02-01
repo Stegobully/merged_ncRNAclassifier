@@ -6,8 +6,7 @@ Machine Learning (ML) classifiers for ncRNA prediction
 Welcome to the Merged ncRNA classifier. ncRNAs are non-coding RNA sequences that do not encode for proteins like messenger RNAs (mRNAs).
 ncRNAs perform a variety of different “housekeeping” and “regulatory" tasks within the cell and can be further classified in RNA families based on
 functional, structural and sequential features. Our ML classifiers are based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs)
-to predict non-coding RNA sequences into one of six main ncRNA-types (lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA). The different ML classifier differentiate in their inputs using structural or sequential information, at which the merged model combining the primary sequence and structural graph features as input 
-achieved the highest accuracy in our benchmark.
+to predict non-coding RNA sequences into one of six main ncRNA-types (lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA). The different ML classifier differentiate in their inputs using structural or sequential information, of which the merged model combining the primary sequence and structural graph features as input achieved the highest accuracy in our benchmark.
 
 # Installation
 
@@ -28,11 +27,11 @@ Create a new virtual environment with Python >=3.10 with a tool of your choice (
 # How to use
 
 ## predict_ncRNAs.py
-The executable python file `predict_ncRNAs.py` provide a step-by-step manual in the console to classify a file of ncRNA sequences using one of our four implemented ML classifiers. The single steps are: 
+The executable python file `predict_ncRNAs.py` provides a step-by-step manual in the console to classify a fasta file of ncRNA sequences using one of our four implemented ML classifiers. Additionally, this script gives the user the option to validate the prediction if the true labels are known by outputting a classification report as well as the confusion matrix for the different ncRNA classes. The individual steps are: 
 
-1. This program needs no additional parameters and should be run from console. The program will ask you, which of the four available models you want to test. Choices are:
+1. Choice of Model: You can choose between the following four models, each needing different input for the classification
 ### Merged
-This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section "GraphProt".
+This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [test_merged.py](#test-merged.py). 
 ### StrEnc
 This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. 
 ### SeqEnc
@@ -44,7 +43,7 @@ This classifier is the fastest at classification, but shows lower scores. If you
 
 Once you have chosen a model, you will be asked whether you would like to classify new sequences or test the model with already classified sequences. 
 
-2. new or test 
+2. Do you want to "test" the model with sequences whose RNA type is known or do you simply want to predict "new" sequences
 ### new
 You will only need to provide a `.fasta` file and the secondary structure (if necessary). The output will be a file in the results folder with the same name as the fasta file, but with `_modelname_predictions.txt` as a suffix, where modelname is the one provided in the previous question. One line of this file may look like this: `URS00019662A9_9685	lncRNA	0.9983231425285339`, where the first item is the sequence ID provided by the `.fasta` file (everything before the first space in the header), the second item is the predicted ncRNA type (one in lncRNA, miRNA, rRNA, snRNA, snoRNA, tRNA) and the third item is the probability output by the softmax function in the output layer of the model. The order of the sequence IDs is the same as in the corresponding `.fasta` file.
 
@@ -58,7 +57,7 @@ If you choose this option, the fasta file has to have headers of following type:
 
 After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by Biopython's `SeqIO.parse`, additional to the rna types in the header of each sequence for the test option. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
 
-4. (Optional) for model X and Y:  
+4. (Optional) for model GrEnc/Merged and StrEnc: Input Graph Encoding or Structure Encoding files
 
 Next, you will be asked to provide the link to the structure file, unless you chose "SeqEnc" for the model. The graphprot graph encoding file will need to end in `.gspan.gz.feature`, the pysster structure encoding will need to end in `pysster.txt`, otherwise the program will repeat the prompt to enter the file. If you chose the default option, you will not be asked to enter a structure/graph encoding file and the program will choose the corresponding file automatically. 
 

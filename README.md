@@ -44,6 +44,11 @@ This classifier is faster than Merged and StrEnc and works using just ´.fasta´
 ### GrEnc
 This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option.
 
+---
+
 Once you have chosen a model, you will be asked whether you would like to classify new sequences or test the model with already classified sequences. 
 ### new
-You will only need to provide a ´.fasta´ file and the secondary structure (if necessary). The output will be a file with the same name as the fasta file, but with ´_predictions.txt´ as a suffix. One line of this file may look like this: ´URS00019662A9_9685	lncRNA	0.9983231425285339´, where the first item is the sequence ID provided by the ´.fasta´ file (everything before the first space in the header), the second item is the predicted ncRNA type (one in lncRNA, miRNA, rRNA, snRNA, snoRNA, tRNA) and the third item is the probability output by the softmax function in the output layer of the model.
+You will only need to provide a ´.fasta´ file and the secondary structure (if necessary). The output will be a file in the results folder with the same name as the fasta file, but with ´_predictions.txt´ as a suffix. One line of this file may look like this: ´URS00019662A9_9685	lncRNA	0.9983231425285339´, where the first item is the sequence ID provided by the ´.fasta´ file (everything before the first space in the header), the second item is the predicted ncRNA type (one in lncRNA, miRNA, rRNA, snRNA, snoRNA, tRNA) and the third item is the probability output by the softmax function in the output layer of the model. The order of the sequence IDs is the same as in the corresponding ´.fasta´ file.
+
+### test
+If you choose this option, the fasta file has to have headers of following type: ´>sequenceid rnatype´, where rnatype is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" (case sensitive). Additionally to the afformentioned ´_predictions.txt´, this method also outputs a ´classification_scores.txt´ which displays scikit-learn's classification report (including class-wise and over all recall, precision and F1-score) and also the Matthews Correlation Coefficient for the prediction. Additionally, ´confusion_matrix.png´ shows the confusion matrix (normalized over each row) for the prediction. Note, that these files are not specific to the fasta input, meaning rerunning the model will overwrite them. 

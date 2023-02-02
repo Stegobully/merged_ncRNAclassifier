@@ -6,10 +6,10 @@ import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 
 # Needed for testing the models
-import test_merged
-import test_grenc
-import test_seqenc
-import test_strenc
+import run_merged
+import run_grenc
+import run_seqenc
+import run_strenc
 
 if __name__ == '__main__':
 
@@ -93,18 +93,18 @@ if __name__ == '__main__':
         # Test if the length of the sequence df matches the number of graph feature vectors
         if not data_processing.test_graphfeat_seq_match(sequence_df, graph_input):
             sys.exit()
-        results, pred_probabilities = test_merged.test_merged(sequence_df, graph_input, fasta_file_input)
+        results, pred_probabilities = run_merged.test_merged(sequence_df, graph_input, fasta_file_input)
 
     # Run the GrEnc model
     elif model.upper() == "GRENC":
         # Test if the length of the sequence df matches the number of graph feature vectors
         if not data_processing.test_graphfeat_seq_match(sequence_df, graph_input):
             sys.exit()
-        results, pred_probabilities = test_grenc.test_grenc(sequence_df, graph_input, fasta_file_input)
+        results, pred_probabilities = run_grenc.test_grenc(sequence_df, graph_input, fasta_file_input)
 
     # Run the SeqEnc model
     elif model.upper() == "SEQENC":
-        results, pred_probabilities = test_seqenc.test_seqenc(sequence_df)
+        results, pred_probabilities = run_seqenc.test_seqenc(sequence_df)
 
     # Run the StrEnc model
     elif model.upper() == "STRENC":

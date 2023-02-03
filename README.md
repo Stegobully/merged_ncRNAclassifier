@@ -88,7 +88,7 @@ Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 
 ---
-REquired Input files:
+Required Input files:
 
 PRimary Sequence 
 
@@ -110,23 +110,23 @@ Confirm the output file now ends in `.gspan.gz.feature`, then you are ready to p
 IF you want to usethe model XXX oder YYY for predciting ncRNAs based on graph encoded you have beforehand to use the ncRNA sequence FASTA file as input for Graphprot to create the needed input file:
 
 ## Pysster
-To install Pysster, refer to https://github.com/budach/pysster. You need to be able to import and run `annotate_structures()`.
+To install Pysster, refer to https://github.com/budach/pysster. You need to be able to import and run `predict_structures()`.
 
 `predict_structures(fasta_file, output_pysster.txt, annotate=True)`, 
 
-where fasta file is the corresponding file to oyur sequence. Make sure the Pysster output file ends in `_pysster.txt`.
+where fasta file is the corresponding file to your sequence. Make sure the Pysster output file ends in `_pysster.txt`.
 
 
-## Datasets availabel for testing 
+## Datasets available for retraining the models and testing
 
-Training data set model X -> Fasta File including 
+Training data set model Merged and StrEnc -> `fasta_files/train_fold_7.fasta`
 
-Training data set model Y -> Fasta File including 
+Training data set model GrEnc -> `fasta_files/train_fold_2.fasta`
 
-Training data set model Z -> Fasta File including 
+Training data set model SeqEnc -> `fasta_files/train_fold_8.fasta`
 
-Training data set model A -> Fasta File including 
+Validation files used have the same number as the training files
 
-Test ddd -> 
+RNAcentral test set -> `fasta_files/rnacentraltestset.fasta`
 
-ddd
+To retrieve the exact model parameters for recreating the classifiers load the model hdf5 files (`model_files/[model]_foldx.hdf5`) using keras. You may then use `model.summary()` for the parameters. For further parameters see the publication. 

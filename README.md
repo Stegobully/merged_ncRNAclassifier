@@ -72,11 +72,13 @@ Different models for selection in predict_ncRNAs.py or as standalone version:
 The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. The  `_[model]_predictions.txt` file. The order of the entered files is not flexible. 
 
 ### run_merged.py
-This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a runtime parameter when executing the python script.
+This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a runtime parameter when executing the python script. If you are interested in the exact architecture of the network load `models/merged_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
 ### run_strenc.py
+This model uses the structure encoding created by [pysster](#pysster) combined with the primary sequence as input. Pysster uses RNAfold by Vienna RNA to predict the secondary structure and then annotates each nucleotide with the substructure it belongs to (F: 5'-end; I: Internal Loop; M: Multi Loop; S: Stem; H: Hairpin Loop; T: 3'end). The nucleotide and structure sequence are then combined through arbitrary encoding of each combination of nucleotide and structure (See [Publication](#publication)). This combined sequence is then used as input for a convolutional neural network. If you are interested in the exact architecture of the network load `models/strenc_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+
 Example call: `python test_strenc.py path/to/fasta.fasta path/to/structure_pysster.txt`
 
 ### run_grenc.py
@@ -130,3 +132,7 @@ Validation files used have the same number as the training files
 RNAcentral test set -> `fasta_files/rnacentraltestset.fasta`
 
 To retrieve the exact model parameters for recreating the classifiers load the model hdf5 files (`model_files/[model]_foldx.hdf5`) using keras. You may then use `model.summary()` for the parameters. For further parameters see the publication. 
+
+# Publication
+
+Insert Link to Publication here

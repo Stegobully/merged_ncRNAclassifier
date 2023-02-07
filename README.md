@@ -31,21 +31,19 @@ The executable python file `predict_ncRNAs.py` provides a step-by-step manual in
 
 ## 1. Choice of Model: You can choose between the following four models, each needing different input for the classification
 ### Merged
-This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [test_merged.py](#test-merged.py). 
+This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_merged.py](#run_mergedpy). 
 ### StrEnc
-This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. 
+This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. For more information about the model see [run_strenc.py](#run_strencpy). 
 ### SeqEnc
-This classifier is faster than Merged and StrEnc and works using just `.fasta` files as input. The accuracy is slightly lower due to the loss of information about secondary structure. 
+This classifier is faster than Merged and StrEnc and works using just `.fasta` files as input. The accuracy is slightly lower due to the loss of information about secondary structure. For more information about the model see [run_seqenc.py](#run_seqencpy). 
 ### GrEnc
-This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option.
+This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_grenc.py](#run_grencpy).
 
----
-
-Once you have chosen a model, you will be asked whether you would like to classify new sequences or test the model with already classified sequences. 
+--- 
 
 ## 2. Do you want to "test" the model with sequences whose RNA type is known or do you simply want to predict "new" sequences
 ### new
-You will only need to provide a `.fasta` file and the secondary structure (if necessary). The output will be a file in the results folder with the same name as the fasta file, but with `_modelname_predictions.txt` as a suffix, where modelname is the one provided in the previous question. One line of this file may look like this: `URS00019662A9_9685	lncRNA	0.9983231425285339`, where the first item is the sequence ID provided by the `.fasta` file (everything before the first space in the header), the second item is the predicted ncRNA type (one in lncRNA, miRNA, rRNA, snRNA, snoRNA, tRNA) and the third item is the probability output by the softmax function in the output layer of the model. The order of the sequence IDs is the same as in the corresponding `.fasta` file.
+You will only need to provide a `.fasta` file and the secondary structure (if necessary). The output will be a file in the results folder with the same name as the fasta file, but with `_modelname_predictions.txt` as a suffix, where modelname is the one provided in the previous question. One line of this file may look like this: `URS00019662A9_9685	lncRNA	0.9983231425285339`, where the first item is the sequence ID provided by the `.fasta` file (everything before the first space in the header), the second item is the predicted ncRNA type (one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA") and the third item is the probability output by the softmax function in the output layer of the model. The order of the sequence IDs is the same as in the corresponding `.fasta` file.
 
 ### test
 If you choose this option, the fasta file has to have headers of following type: `>sequenceid rnatype`, where rnatype is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" (case sensitive). Additionally to the afformentioned `_modelname_predictions.txt`, this method also outputs a `classification_scores.txt` which displays scikit-learn's classification report (including class-wise and over all recall, precision and F1-score) and also the Matthews Correlation Coefficient for the prediction. Additionally, `confusion_matrix.png` shows the confusion matrix (normalized over each row) for the prediction. Note, that these files are not specific to the fasta input, meaning rerunning the model will overwrite them. 
@@ -70,19 +68,21 @@ The output consists of a .txt file in the results folder. It has the same name a
 
 Different models for selection in predict_ncRNAs.py or as standalone version:
 
-## test_[model].py
-The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. There is no option to test known sequences, the output only consists of `_[model]_predictions.txt` file. The order of the entered files is not flexible. 
+## run_[model].py
+The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. The  `_[model]_predictions.txt` file. The order of the entered files is not flexible. 
 
-### test_merged.py
+### run_merged.py
+This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a runtime parameter when executing the python script.
+
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
-### test_strenc.py
+### run_strenc.py
 Example call: `python test_strenc.py path/to/fasta.fasta path/to/structure_pysster.txt`
 
-### test_grenc.py
+### run_grenc.py
 Example call: `python test_grenc.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
-### test_seqenc.py
+### run_seqenc.py
 Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 
@@ -90,7 +90,7 @@ Example call: `python test_seqenc.py path/to/fasta.fasta`
 ---
 Required Input files:
 
-PRimary Sequence 
+Primary Sequence 
 
 
 

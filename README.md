@@ -82,9 +82,13 @@ This model uses the structure encoding created by [pysster](#pysster) combined w
 Example call: `python test_strenc.py path/to/fasta.fasta path/to/structure_pysster.txt`
 
 ### run_grenc.py
+This model uses the graph encoding created by [GraphProt](#graphprot) as input for an ANN model. The graph encoding comes in the form of 32,768 features in a sparse vector. This encoding is first derived using secondary structure prediction with the tool "RNAstruct". The secondary structure is then encoded into a vector using a graph kernel approach that derives long distance graphical features of the secondary structures. If you are interested in the exact architecture of the network load `models/grenc_fold2.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+
 Example call: `python test_grenc.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
 ### run_seqenc.py
+This model uses just the primary sequence as input. It is encoded into numerical values and padded to a length of 12,000 nt. For the classification, a convolutional neural network is used. If you are interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+
 Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 

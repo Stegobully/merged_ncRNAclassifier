@@ -94,9 +94,10 @@ Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 
 ---
-Required Input files:
+## Required Input files:
 
-Primary Sequence 
+Primary Sequence: 
+The primary sequence needs to be entered as a fasta file with ending `.fasta` or `.fa`. It does not matter if the sequence is written in a single line or with line breaks, as long as the file is readable by Biopythons SeqIO module. The output file will have the same name as the fasta file except for the .fa/sta ending but with `_[model]_predictions.txt` as a suffix. For the output the sequence identifiers up until the first space from the fasta files are used. If you wish to get results about the accuracy of our models on a test set with known labels, you will need to edit the fasta such that each header is of the form `>sequenceid rna_type`, where rna_type is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA". 
 
 
 

@@ -63,16 +63,16 @@ Lastly, the program will read in the `.fasta` file (and the structure file if ne
 
 ## 5. Output will be created automatically
 
-The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by "\_[model]\_predictions.txt", where model is the chosen model. If you chose the "test" option, two more files will be output to the results folder, "classification_scores.txt" containing class-wise recall, precision and F1-score as well as over all recall, precision, F1-score and MCC, and "confusion_matrix.png", which contains the normalized confusion matrix of the RNA types, created using Plotnine. 
+The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model. If you chose the "test" option, two more files will be output to the results folder, `classification_scores.txt` containing class-wise recall, precision and F1-score as well as over all recall, precision, F1-score and MCC, and `confusion_matrix.png`, which contains the normalized confusion matrix of the RNA types, created using Plotnine. 
 
 
 Different models for selection in predict_ncRNAs.py or as standalone version:
 
 ## run_[model].py
-The `test_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the structure file as run parameters. The  `_[model]_predictions.txt` file. The order of the entered files is not flexible. 
+The `run_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the graph/structure file as run parameters. The output will be written to `_[model]_predictions.txt`. The order of the entered files is not flexible. 
 
 ### run_merged.py
-This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a runtime parameter when executing the python script. If you are interested in the exact architecture of the network load `models/merged_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a run parameter when executing the python script. If you are interested in the exact architecture of the network load `models/merged_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
@@ -87,18 +87,15 @@ This model uses the graph encoding created by [GraphProt](#graphprot) as input f
 Example call: `python test_grenc.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
 ### run_seqenc.py
-This model uses just the primary sequence as input. It is encoded into numerical values and padded to a length of 12,000 nt. For the classification, a convolutional neural network is used. If you are interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+This model uses just the primary sequence as input. It is encoded into numerical values and padded to a length of 12,000 nt. For the classification, a convolutional neural network is used. This model does not need any additional input other than the fasta file. If you are interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_seqenc.py path/to/fasta.fasta`
-
-
 
 ---
 ## Required Input files:
 
 Primary Sequence: 
-The primary sequence needs to be entered as a fasta file with ending `.fasta` or `.fa`. It does not matter if the sequence is written in a single line or with line breaks, as long as the file is readable by Biopythons SeqIO module. The output file will have the same name as the fasta file except for the .fa/sta ending but with `_[model]_predictions.txt` as a suffix. For the output the sequence identifiers up until the first space from the fasta files are used. If you wish to get results about the accuracy of our models on a test set with known labels, you will need to edit the fasta such that each header is of the form `>sequenceid rna_type`, where rna_type is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA". 
-
+The primary sequence needs to be entered as a fasta file with ending `.fasta` or `.fa`. It does not matter if the sequence is written in a single line or with line breaks, as long as the file is readable by Biopythons SeqIO module. The output file will have the same name as the fasta file except for the .fasta or .fa ending but with `_[model]_predictions.txt` as a suffix. For the output, the sequence identifiers up until the first space from the fasta files are used. If you wish to get results about the accuracy of our models on a test set with known labels, you will need to edit the fasta such that each header is of the form `>sequenceid rna_type`, where rna_type is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA". 
 
 If you want to use the models GrEnc or Merged for predicting ncRNAs based on graph encoded secondary structure you have to use the ncRNA sequence fasta file as input for GraphProt to create the needed input file beforehand:
 
@@ -126,11 +123,13 @@ where fasta file is the corresponding file to your sequence. Make sure the Pysst
 
 ## Datasets available for retraining the models and testing
 
-Training data set model Merged and StrEnc -> `fasta_files/train_fold_7.fasta`
+Training and validation data sets for models Merged and StrEnc -> `fasta_files/train_fold_7.fasta`; `fasta_files/val_fold_7.fasta`
 
-Training data set model GrEnc -> `fasta_files/train_fold_2.fasta`
+Training and validation data sets for models GrEnc -> `fasta_files/train_fold_2.fasta`; `fasta_files/val_fold_2.fasta`
 
-Training data set model SeqEnc -> `fasta_files/train_fold_8.fasta`
+Training and validation data sets for models SeqEnc -> `fasta_files/train_fold_8.fasta`; `fasta_files/val_fold_8.fasta`
+
+If you wish to train a new model on the same set of sequences, simply combine the
 
 Validation files used have the same number as the training files
 

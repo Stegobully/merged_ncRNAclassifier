@@ -129,7 +129,7 @@ Training and validation data sets for models GrEnc -> `fasta_files/train_fold_2.
 
 Training and validation data sets for models SeqEnc -> `fasta_files/train_fold_8.fasta`; `fasta_files/val_fold_8.fasta`
 
-If you wish to train a new model on the same set of sequences, simply combine the
+If you wish to train a new model on the same set of sequences, simply combine one of the train/val files to create the full training set.
 
 Validation files used have the same number as the training files
 

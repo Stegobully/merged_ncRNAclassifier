@@ -53,7 +53,7 @@ If you choose this option, the fasta file has to have headers of following type:
 ## 3. Input Sequence File in Fasta Format
 
 
-After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by Biopython's `SeqIO.parse`, additional to the rna types in the header of each sequence for the test option. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
+After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by BioPython's `SeqIO.parse`, additional to the ncRNA types in the header of each sequence for the test option. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
 
 ## 4. (Optional) for model GrEnc/Merged and StrEnc: Input Graph Encoding or Structure Encoding files
 

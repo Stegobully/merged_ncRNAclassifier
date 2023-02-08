@@ -100,10 +100,9 @@ Primary Sequence:
 The primary sequence needs to be entered as a fasta file with ending `.fasta` or `.fa`. It does not matter if the sequence is written in a single line or with line breaks, as long as the file is readable by Biopythons SeqIO module. The output file will have the same name as the fasta file except for the .fa/sta ending but with `_[model]_predictions.txt` as a suffix. For the output the sequence identifiers up until the first space from the fasta files are used. If you wish to get results about the accuracy of our models on a test set with known labels, you will need to edit the fasta such that each header is of the form `>sequenceid rna_type`, where rna_type is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA". 
 
 
+If you want to use the models GrEnc or Merged for predicting ncRNAs based on graph encoded secondary structure you have to use the ncRNA sequence fasta file as input for GraphProt to create the needed input file beforehand:
 
-IF you want to usethe model XXX oder YYY for predciting ncRNAs based on graph encoded you have beforehand to use the ncRNA sequence FASTA file as input for Graphprot to create the needed input file:
-
-## GraphProt
+### GraphProt
 To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will need to be able to execute `fasta2shrep_gspan.pl` and `EDeN`. To create the Graph Feature files execute:
 
 1. `path/to/fasta2shrep_gspan.pl -abstr -stdout -M 3 -wins '150,' -shift '25' -fasta {fasta_file} -t 3 | gzip > {gspan_file}`
@@ -113,13 +112,14 @@ To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will 
 where fasta_file is the path to the fasta file you want to predict and gspan_file is a new file that ends in `.gspan.gz`
 Confirm the output file now ends in `.gspan.gz.feature`, then you are ready to predict the sequences from the fasta file.
 
+If you want to use the model StrEnc for predicting ncRNAs based on structure encoding of the secondary structure you have to use the ncRNA sequence fasta file as input for Pysster to create the needed input file beforehand:
 
-IF you want to usethe model XXX oder YYY for predciting ncRNAs based on graph encoded you have beforehand to use the ncRNA sequence FASTA file as input for Graphprot to create the needed input file:
-
-## Pysster
+### Pysster
 To install Pysster, refer to https://github.com/budach/pysster. You need to be able to import and run `predict_structures()`.
+In Python, run:
 
-`predict_structures(fasta_file, output_pysster.txt, annotate=True)`, 
+1. `from pysster.utils import predict_structures`
+2. `predict_structures(fasta_file, output_pysster.txt, annotate=True)`, 
 
 where fasta file is the corresponding file to your sequence. Make sure the Pysster output file ends in `_pysster.txt`.
 
@@ -140,4 +140,4 @@ To retrieve the exact model parameters for recreating the classifiers load the m
 
 # Publication
 
-Insert Link to Publication here
+XXXXXXXXXXXXXX Insert Link to Publication here

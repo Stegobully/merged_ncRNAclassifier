@@ -1,6 +1,7 @@
 import os
 import sys
 import data_processing
+import output_analysis
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -12,13 +13,26 @@ import run_strenc
 
 if __name__ == '__main__':
 
-    # The user will first be asked a couple of question to determine what model they want to use
+    # The user will first be asked a couple of question to determine what model they want to use,
+    # whether they want to test the model with annotated sequences or predict new ones,
     # what sequences (in the form of a fasta file) they want to predict,
     # and lastly, if they chose Merged or GrEnc, they will have to provide a graph features file.
+    # If the user wishes to test sequences, the fasta files will need to have the label for each sequence
+    # after each identifier (e.g.: >URS00009C41D9_10090 lncRNA) in the fasta file.
     # The model outputs will be saved in a txt file with each sequence identifier and the according probability.
+    # In the case of testing, classification report and mcc are saved in results/classification_scores.txt
+    # and a normalized confusion matrix is saved in results/confusion_matrix.png
 
-    print("\nWelcome to ncRNA classification\n"
-          "Which model would you like to predict sequences saved in fasta file format?\n"
+    print("\nWelcome to the benchmark tool for ncRNA classification\n"
+          "This program has the same functionality as predict_ncRNAs.py, but you will need to provide the classifier"
+          "with the labels of each sequence in the following way: For each sequence in the fasta file the header"
+          "needs to be in the following format:\n"
+          "'>SeqID rna_type', where rna_type is one of 'lncRNA', 'miRNA', 'rRNA', 'snRNA', 'snoRNA' or 'tRNA' for"
+          "each sequence (case sensitive)\n"
+          "Additionally to the results the program will provide two files in the results folder, "
+          "classification score.txt and confusion_matrix.png, in which scikit-learn's classification report and "
+          "a normalized confusion matrix are found.\n"
+          "Which model would you like to benchmark?\n"
           "Merged provides the best results, but requires Graph Features predicted by GraphProt\n"
           "StrEnc provides the second best result, but requires Structural Encoding created by Pysster\n"
           "SeqEnc predicts using only the sequence, but does not require additional files\n"
@@ -43,7 +57,7 @@ if __name__ == '__main__':
         graph_input = ""
         print("You will now need to enter the path to the corresponding graph feature file created by GraphProt\n"
               "This file needs to have the ending '.gspan.gz.feature'\n"
-              "For how to create new gspan feature files see section 'GraphProt' of the readme\n")
+              "For how to create new gspan feature files see section XYZ of the readme\n")
         while not os.path.isfile(graph_input) & graph_input.endswith(".gspan.gz.feature"):
             graph_input = input("Please enter a valid path to a feature file\n")
 
@@ -64,8 +78,8 @@ if __name__ == '__main__':
         graph_input = "graphprot_output/merged_test_file_30.gspan.gz.feature"
         struct_input = "merged_test_file_30_pysster.txt"
 
-    # Reading in the fasta
-    sequence_df = data_processing.read_fasta_file(fasta_file_input, labels=False)
+    # Read in fasta file
+    sequence_df = data_processing.read_fasta_file(fasta_file_input, labels=True)
 
     # Run the Merged model
     if model.upper() == "MERGED":
@@ -101,3 +115,8 @@ if __name__ == '__main__':
         output.write(f"{id}\t{pred}\t{pred_probability}\n")
     output.close()
     print(f"Results are saved in {output_file}")
+
+    # Print classification report, MCC and confusion matrix to files
+    labels = sequence_df.label
+    output_analysis.return_output_analysis(labels, results)
+    output_analysis.plot_confusion_matrix(labels, results)

@@ -33,7 +33,7 @@ The executable python file `predict_ncRNAs.py` provides a step-by-step manual in
 ### Merged
 This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_merged.py](#run_mergedpy). 
 ### StrEnc
-This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. For more information about the model see [run_strenc.py](#run_strencpy). 
+This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. For how to create the structure encoding files see section [Pysster](#pysster). For more information about the model see [run_strenc.py](#run_strencpy). 
 ### SeqEnc
 This classifier is faster than Merged and StrEnc and works using just `.fasta` files as input. The accuracy is slightly lower due to the loss of information about secondary structure. For more information about the model see [run_seqenc.py](#run_seqencpy). 
 ### GrEnc

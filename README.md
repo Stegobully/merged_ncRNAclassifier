@@ -21,7 +21,7 @@ We recommend to create a virtual environment with Python >=3.10 for the usage of
 |plotnine   |0.10.1   |
 
 # How to use
-The Git repository contains five different python scripts. To perform a step-by-step manual in the console you should use the `predict_ncRNAs.py`. If you prefer a specific model you can also directly use one of the provided scripts for the different models: `run_strenc.py`, `run_grenc.py`, `run_seqenc.py` or `run_merged.py`.
+The Git repository contains five different python scripts. To perform a step-by-step manual in the console you should use the `predict_ncRNAs.py`. If you prefer a specific model you can also directly use one of the provided scripts for the different models: `run_strenc.py`, `run_grenc.py`, `run_seqenc.py` or `run_merged.py`. Lastly, we provide `benchmark_classifiers.py`, which can be used to benchmark our models on testsets.
 
 ## ML-classifier for a step-by-step manual in the console
 The executable python file `predict_ncRNAs.py` provides a step-by-step manual in the console to classify a fasta file of ncRNA sequences using one of the four implemented ML classifiers (StrEnc, SeqEnc, GrEnc or Merged). The individual steps are: 
@@ -36,31 +36,22 @@ This classifier is faster than Merged and StrEnc and works using just `.fasta` f
 ### GrEnc
 This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_grenc.py](#run_grencpy).
 
---- 
-
-## 2. Do you want to "test" the model with sequences whose RNA type is known or do you simply want to predict "new" sequences
-### new
-You will only need to provide a `.fasta` file and the secondary structure (if necessary). The output will be a file in the results folder with the same name as the fasta file, but with `_modelname_predictions.txt` as a suffix, where modelname is the one provided in the previous question. One line of this file may look like this: `URS00019662A9_9685	lncRNA	0.9983231425285339`, where the first item is the sequence ID provided by the `.fasta` file (everything before the first space in the header), the second item is the predicted ncRNA type (one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA") and the third item is the probability output by the softmax function in the output layer of the model. The order of the sequence IDs is the same as in the corresponding `.fasta` file.
-
-### test
-If you choose this option, the fasta file has to have headers of following type: `>sequenceid rnatype`, where rnatype is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" (case sensitive). Additionally to the afformentioned `_modelname_predictions.txt`, this method also outputs a `classification_scores.txt` which displays scikit-learn's classification report (including class-wise and over all recall, precision and F1-score) and also the Matthews Correlation Coefficient for the prediction. Additionally, `confusion_matrix.png` shows the confusion matrix (normalized over each row) for the prediction. Note, that these files are not specific to the fasta input, meaning rerunning the model will overwrite them. 
-
 ---
 
-## 3. Input Sequence File in Fasta Format
+## 2. Input Sequence File in Fasta Format
 
 
-After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by BioPython's `SeqIO.parse`, additional to the ncRNA types in the header of each sequence for the test option. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
+After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by BioPython's `SeqIO.parse`. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
 
-## 4. (Optional) for model GrEnc/Merged and StrEnc: Input Graph Encoding or Structure Encoding files
+## 3. (Optional) for model GrEnc/Merged and StrEnc: Input Graph Encoding or Structure Encoding files
 
-Next, you will be asked to provide the link to the structure file, unless you chose "SeqEnc" for the model. The graphprot graph encoding file will need to end in `.gspan.gz.feature`, the pysster structure encoding will need to end in `pysster.txt`, otherwise the program will repeat the prompt to enter the file. If you chose the default option, you will not be asked to enter a structure/graph encoding file and the program will choose the corresponding file automatically. 
+Next, you will be asked to provide the path to the structure file, unless you chose "SeqEnc" for the model. The graphprot graph encoding file will need to end in `.gspan.gz.feature`, the pysster structure encoding will need to end in `pysster.txt`, otherwise the program will repeat the prompt to enter the file. If you chose the default option, you will not be asked to enter a structure/graph encoding file and the program will choose the corresponding file automatically. 
 
 Lastly, the program will read in the `.fasta` file (and the structure file if needed) and predict with the chosen model. If the number of graph feature vectors in the provided `.feature` file and sequences in the `.fasta` file do not match, the program will throw an error before prediction. If prediction does not fail, the output is written to the corresponding file and if the option "test" was chosen, the plots are created and saved in the results folder.
 
-## 5. Output will be created automatically
+## 4. Output will be created automatically
 
-The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model. If you chose the "test" option, two more files will be output to the results folder, `classification_scores.txt` containing class-wise recall, precision and F1-score as well as over all recall, precision, F1-score and MCC, and `confusion_matrix.png`, which contains the normalized confusion matrix of the RNA types, created using Plotnine. 
+The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model.
 
 
 Different models for selection in predict_ncRNAs.py or as standalone version:
@@ -118,6 +109,11 @@ In Python, run:
 
 where fasta file is the corresponding file to your sequence. Make sure the Pysster output file ends in `_pysster.txt`.
 
+# For Developers:
+
+If you wish to benchmark our model with a new test file, we recommend you use `benchmark_classifiers.py`. This script has the same functionality as `predict_ncRNAs.py`, but additionally to the results file outputs `results/classification_scores.txt`, which contains scikit-learns classification report and Matthews Correlation Coefficient of the results and `results/confusion_matrix.png` which uses Plotnine to create a plot of the normalized confusion matrix of the predictions. For `benchmark_classifiers.py` to work your fasta file sequence headers need to be of the following format:
+
+`>sequence_id rna_type` where `rna_type` has to be one of `lncRNA`, `miRNA`, `rRNA`, `snRNA`, `snoRNA` or `tRNA` (case sensitive). Make sure, `sequence_id` does not contain spaces. 
 
 ## Datasets available for retraining the models and testing
 

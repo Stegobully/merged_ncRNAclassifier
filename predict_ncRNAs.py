@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     # Print output path. If the user wishes to test with provided sequences the necessary files are set to the default
     if fasta_file_input.upper() != "DEFAULT":
-        print(f"The output will be provided in {fasta_file_input.split('.')[0]}_predictions.txt\n")
+        print(f"The output will be provided in results/{fasta_file_input.split('.')[0]}_{model}_predictions.txt\n")
     else:
         fasta_file_input = "merged_test_file_30.fasta"
         graph_input = "graphprot_output/merged_test_file_30.gspan.gz.feature"

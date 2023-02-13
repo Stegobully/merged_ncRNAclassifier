@@ -1,12 +1,16 @@
-# merged_ncRNAclassifier: Improved late merged ML-Classifier to predict ncRNA classes using sequence and graph encoded structures
+# merged_ncRNAclassifier: Classifying ncRNA sequences based on sequence, structure and graph encoding
+Machine Learning (ML) classifiers for ncRNA prediction
 
 # Introduction
 
-The merged_ncRNAclassifier allow you to predict six different classes of non-coding (nc)RNAs by providing unknown Fasta sequences. In comparison to protein coding messenger (m)RNAs perform ncRNAs a variety of different “housekeeping” and “regulatory" tasks within the cell and can be further classified in ncRNA classes differing based on sequential, functional and/or structural features. Our approach compared the prediction capacity of ML classifiers using different features as input and model architectures based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs). Our provided classifiers explained below in detail can predict ncRNAs into one of the six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifier differentiate in their inputs using wether only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using the tool Pysster (Ref), graph encoded structural information (GrEnc) using the tool Graphprot (ref) or the best performing merged model (Merged) combining the primary sequence and structural graph encoded features as input.
+Welcome to the Merged ncRNA classifier. ncRNAs are non-coding RNA sequences that do not encode for proteins like messenger RNAs (mRNAs).
+ncRNAs perform a variety of different “housekeeping” and “regulatory" tasks within the cell and can be further classified in RNA families based on
+functional, structural and sequential features. Our ML classifiers are based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs)
+to predict non-coding RNA sequences into one of six main ncRNA-types (lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA). The different ML classifier differentiate in their inputs using structural or sequential information, of which the merged model combining the primary sequence and structural graph features as input achieved the highest accuracy in our benchmark.
 
 # Installation
 
-We recommend to create a virtual environment with Python >=3.10 for the usage of our merged_ncRNAclassifier. Clone the git repository into your folder, assign it to the virtual environment and make sure you have installed the following packages for your virtual environment:
+Create a new virtual environment with Python >=3.10 with a tool of your choice (e.g. PyCharm). Clone the git repository into this folder and make sure you have installed the following packages:
 
 |Package|Version|
 |---|---|
@@ -21,10 +25,9 @@ We recommend to create a virtual environment with Python >=3.10 for the usage of
 |plotnine   |0.10.1   |
 
 # How to use
-The Git repository contains five different python scripts in general. To perform a step-by-step manual in the console you should use the `predict_ncRNAs.py`. If you prefer a specific model you can also directly use one of the provided scripts for the different models: run_strenc.py, run_grenc.py, run_seqenc.py or run_merged.py.
 
-## ML-classifier for a step-by-step manual in the console
-The executable python file `predict_ncRNAs.py` provides a step-by-step manual in the console to classify a fasta file of ncRNA sequences using one of the four implemented ML classifiers (StrEnc, SeqEnc, GrEnc or Merged). The individual steps are: 
+## predict_ncRNAs.py
+The executable python file `predict_ncRNAs.py` provides a step-by-step manual in the console to classify a fasta file of ncRNA sequences using one of our four implemented ML classifiers. Additionally, this script gives the user the option to validate the prediction if the true labels are known by outputting a classification report as well as the confusion matrix for the different ncRNA classes. The individual steps are: 
 
 ## 1. Choice of Model: You can choose between the following four models, each needing different input for the classification
 ### Merged

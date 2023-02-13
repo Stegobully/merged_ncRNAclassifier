@@ -113,7 +113,7 @@ where fasta file is the corresponding file to your sequence. Make sure the Pysst
 
 If you wish to benchmark our model with a new test file, we recommend you use `benchmark_classifiers.py`. This script has the same functionality as `predict_ncRNAs.py`, but additionally to the results file outputs `results/classification_scores.txt`, which contains scikit-learns classification report and Matthews Correlation Coefficient of the results and `results/confusion_matrix.png` which uses Plotnine to create a plot of the normalized confusion matrix of the predictions. For `benchmark_classifiers.py` to work your fasta file sequence headers need to be of the following format:
 
-`>sequence_id rna_type` where `rna_type` has to be one of `lncRNA`, `miRNA`, `rRNA`, `snRNA`, `snoRNA` or `tRNA` (case sensitive). Make sure, `sequence_id` does not contain spaces. 
+`>sequence_id rna_type` where `rna_type` has to be one of `lncRNA`, `miRNA`, `rRNA`, `snRNA`, `snoRNA` or `tRNA` (case sensitive). Make sure, `sequence_id` does not contain spaces. However, you may also simply use `predict_ncRNAs.py`
 
 ## Datasets available for retraining the models and testing
 
@@ -125,9 +125,11 @@ Training and validation data sets for models SeqEnc -> `fasta_files/train_fold_8
 
 If you wish to train a new model on the same set of sequences, simply combine one of the train/val files to create the full training set.
 
-Validation files used have the same number as the training files
-
 RNAcentral test set -> `fasta_files/rnacentral_testset.fasta`
+
+RNAcentral test set (reduced to fit ncRDense) -> `fasta_files/rnacentral_testset_ncrdense.fasta`
+
+Rfam test set (reduced to fit ncRDense and our models) -> `fasta_files/rfam_testset_ncrdense.fasta` [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5540506/)
 
 To retrieve the exact model parameters for recreating the classifiers load the model hdf5 files (`model_files/[model]_foldx.hdf5`) using keras. You may then use `model.summary()` for the parameters. For further parameters see the publication. 
 

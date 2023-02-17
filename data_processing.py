@@ -207,11 +207,6 @@ def write_seq_df_to_fasta(df,
     
     # This function takes a dataframe of the format produced by read_fastas 
     # and writes the sequences into new fasta files
-    # mode refers to the level of separation into type and subtypes
-    # mode = 1 will write all the sequences into the filename provided
-    # mode = 2 will create a fasta file for each rna type (e.g. miRNA.fasta) 
-    # mode = 3 will create a fasta for each combination of type and subtype (e.g rRNA_5S.fasta)
-    # seq_col, type_col and subtype_col indicate the column names of the dataframes in which the information is saved
     # Fasta files are saved to the file provided in outpath
 
     seq_list = []

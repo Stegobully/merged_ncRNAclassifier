@@ -26,7 +26,7 @@ The Git repository contains six different python scripts. To perform a step-by-s
 ## `predict_ncRNAs.py`: ML-classifier for a step-by-step manual in the console
 
 The executable python script `predict_ncRNAs.py` provides a step-by-step manual in the console and always needs a standard Fasta file of RNA sequences as input for classification into tRNA, rRNA, snoRNA, snRNA, miRNA and lncRNA. The output will be written directly to the results folder in the current working directory.  The output file for all individual ncRNA sequence results will be `[fastafile]_[modelname]_predictions.txt`, where \[modelname\] is replaced by the chosen ML classifier and \[fastafile\] is the same as the provided fasta input. The output file contains for each header from your input file: ‘name\tpredicted class\tconfidence score\n’. The predicted ncRNA type can be "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" and the confidence score is between 0 (not confident at all) and 1 (confident) based on the softmax function in the output layer of the ML classifier. Beside the output .txt file 
-If you want to use the StrEnc ML classifier you have in addition to prepare a Pysster format file using Pysster (ref) and for the usage of GrEnc or Merged as second input file a Graphprot (ref) output is required.  The individual steps are:
+If you want to use the StrEnc ML classifier you have in addition to prepare a Pysster format file using [Pysster](#pysster) and for the usage of GrEnc or Merged as second input file a [Graphprot](#graphprot) output is required.  The individual steps are:
 
 ## 1. Choice of Model: You can choose between the following four models, each needing different input for the classification
 ### Merged

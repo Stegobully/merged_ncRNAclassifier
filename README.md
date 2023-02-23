@@ -116,8 +116,9 @@ Example:
 `ATCTGCTCGCCGGAGCTCACTCT`
 `FFFFSSSSHHHHSSSSTTTTTTT`
 
-Every third line needs to contain the structure sequence made up of one of the 
+Every third line needs to contain the structure sequence made up of one of the six structure codes (5'-End: "F"; Stem: "S"; Inner Loop: "I"; Multi Loop: "M"; Hairpin Loop: "H"; 3'-End: "T"). The python script then creates the input for the StrEnc model by combining the second and third line into an arbitrary encoding, e.g. an A nucleotide as part of an inner loop ("I") is encoded as the letter "E". The full table for each combination of nucleotide and structure can be found in the [Publication](#publication). For the above example, the created input sequence would be
 
+`QLULFIYIJAAJFWFIBSZSBSB`
 
 ## Datasets available for retraining the models and testing
 Uploaded you find the training and validation fasta and structural files for our best performing models GrEnc, StrEnc, SeqEnc and Merged. The sequences are all downloaded from the RNAcentral (ref) and contain the …. 

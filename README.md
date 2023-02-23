@@ -1,8 +1,8 @@
-# merged_ncRNAclassifier: Improved late merged ML-Classifier to predict ncRNA classes using sequence and graph encoded structures
+# merged_ncRNAclassifier: Improved late merge ML-Classifier to predict ncRNA classes using sequence and graph encoded structures
 
 # Introduction
 
-The merged_ncRNAclassifier allows you to predict six different classes of non-coding (nc)RNAs. In comparison to protein coding messenger (m)RNAs ncRNAs perform a variety of different “housekeeping” and “regulatory" tasks within the cell and can be further classified into ncRNA classes varying in sequential, functional and/or structural features. Our approach compared the prediction capacity of ML classifiers using different features as input and model architectures based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs) ([Publication](#publication)). Our provided classifiers explained in detail below can predict ncRNAs into one of the six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifiers differentiate in their inputs using either only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using the tool Pysster ([PubMed](https://pubmed.ncbi.nlm.nih.gov/29659719/)), graph encoded structural information (GrEnc) using the tool GraphProt ([PubMed](https://pubmed.ncbi.nlm.nih.gov/24451197/)) or the best performing merged model (Merged) combining the primary sequence and structural graph encoded features as input.
+The merged_ncRNAclassifier allows you to predict six different classes of non-coding (nc)RNAs. In comparison to protein coding messenger (m)RNAs, ncRNAs perform a variety of different “housekeeping” and “regulatory" tasks within the cell and can be further classified into ncRNA classes differing based on sequential, functional and/or structural features. Our approach compared the prediction capacity of ML classifiers using different features as input and model architectures based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs) ([Publication](#publication)). Our provided classifiers explained in detail below can predict ncRNAs into one of the six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifiers differentiate in their inputs using either only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using the tool [Pysster](#pysster), graph encoded structural information (GrEnc) using the tool [GraphProt](#graphprot) or the best performing merged model (Merged) combining the primary sequence and structural graph encoded features as input.
 
 # Installation
 
@@ -21,120 +21,128 @@ We recommend creating a virtual environment with Python >=3.10 for the usage of 
 |plotnine   |0.10.1   |
 
 # How to use
-The Git repository contains six different python scripts. To perform a step-by-step manual in the console you can use `predict_ncRNAs.py`. If you prefer a specific model you can also directly use one of the provided scripts for the different models: `run_strenc.py`, `run_grenc.py`, `run_seqenc.py` or `run_merged.py`. Lastly, we provide `benchmark_classifiers.py`, which can be used to benchmark our models on testsets.
+The Git repository contains six different python scripts. To perform a step-by-step manual in the console you can use the `predict_ncRNAs.py`, which allows you to choose between the four different ML classifiers. If you prefer a specific ML classifier you can also directly use one of the four provided scripts for the different models: run_strenc.py, run_grenc.py, run_seqenc.py or run_merged.py. If you want to benchmark your tool against our ML classifier you can use the python script `benchmark_classifiers.py`, which additionally to the functions of `predict_ncRNAs.py` also adds the additional output of the prediction scores (Precision, Recall, F1, Matthews Correlation Coefficient). This script requires the labels of each sequence to be provided in the fasta file headers, so that the scores can be calculated.
 
-## `predict_ncRNAs.py`: ML-classifier for a step-by-step manual in the console
+# File `predict_ncRNAs.py`: ncRNA classifier with step-by-step manual in the console
+The executable python script `predict_ncRNAs.py` provides a step-by-step manual in the console and always needs a standard fasta file of RNA sequences as input for classification into tRNA, rRNA, snoRNA, snRNA, miRNA and lncRNA. _The output will be written directly in the working directory or can be defined using the standard output in the console._ The output file for all individual ncRNA sequence results will be `[fastaname]_[modelname]_predictions.txt`, where \[fastaname\] is replaced by the name of the original fasta file and \[modelname\] is replaced by the chosen ML classifier. For each header from your input file the output file contains: ‘name\tpredicted class\tconfidence score\n’, where name corresponds to the name of the sequence in the fasta file. The predicted ncRNA type can be "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" and the confidence score is between 0 (not confident at all) and 1 (confident) based on the softmax function in the output layer of the ML classifier.
+If you want to use the StrEnc ML classifier in addition to the fasta sequence input, you have to prepare a Pysster format file using [Pysster](#pysster) and for the usage of GrEnc or Merged as second input file a [GraphProt](#graphprot) output is required. The individual steps are: 
 
-The executable python script `predict_ncRNAs.py` provides a step-by-step manual in the console and always needs a standard Fasta file of RNA sequences as input for classification into tRNA, rRNA, snoRNA, snRNA, miRNA and lncRNA. The output will be written directly to the results folder in the current working directory.  The output file for all individual ncRNA sequence results will be `[fastafile]_[modelname]_predictions.txt`, where \[modelname\] is replaced by the chosen ML classifier and \[fastafile\] is the same as the provided fasta input. The output file contains for each header from your input file: ‘name\tpredicted class\tconfidence score\n’. The predicted ncRNA type can be "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA" or "tRNA" and the confidence score is between 0 (not confident at all) and 1 (confident) based on the softmax function in the output layer of the ML classifier. Beside the output .txt file 
-If you want to use the StrEnc ML classifier you have in addition to prepare a Pysster format file using [Pysster](#pysster) and for the usage of GrEnc or Merged as second input file a [Graphprot](#graphprot) output is required.  The individual steps are:
-
-## 1. Choice of Model: You can choose between the following four models, each needing different input for the classification
+## 1. ML classifier choice: You can choose between the following four models, each needing different input for the classification.
 ### Merged
-This classifier has the highest accuracy but requires the graph feature file created by GraphProt for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_merged.py](#run_mergedpy). 
+In our benchmark, this classifier had the best overall accuracy and F1-score between all four ML classifiers. Besides the fasta file of ncRNA sequences the classifier requires the graph feature file created by [GraphProt](#graphprot) as input for the classification. For how to create graph feature files see section [GraphProt](#graphprot). For more detailed information about the merged model see [run_merged.py](#run_mergedpy). 
 ### StrEnc
-This classifier has the second highest accuracy but requires the structure annotation file created by pysster. While creating the structure annotation is faster than retrieving the graph feature vectors, if you already have both secondary structure encodings, this model will take longer due to the additional transformation of the input by combining sequence and structure. For how to create the structure encoding files see section [Pysster](#pysster). For more information about the model see [run_strenc.py](#run_strencpy). 
+In our benchmark, this classifier performed best for the classes tRNA and miRNA with respect to the F1-score. _The ML classifier needs a structure encoding file based on the fasta file of ncRNA sequences_. For how to create the structure encoding file see section [Pysster](#pysster). For more detailed information about the model see [run_strenc.py](#run_strencpy). 
 ### SeqEnc
-This classifier is faster than Merged and StrEnc and works using just `.fasta` files as input. The accuracy is slightly lower due to the loss of information about secondary structure. For more information about the model see [run_seqenc.py](#run_seqencpy). 
+This classifier performed in our benchmarks best for the class rRNA. As input the ML classifier directly uses the fasta format file (Header starting with > and in the next line then the sequence). For more detailed information about the model see [run_seqenc.py](#run_seqencpy). 
 ### GrEnc
-This classifier is the fastest at classification, but shows lower scores. If you already have the graph feature files you are better off using Merged. If you wish to test this model anyway, you may do so by choosing this option. For how to create graph feature files see section [GraphProt](#graphprot). For more information about the model see [run_grenc.py](#run_grencpy).
+As input the ML classifier uses the fasta format file transformed into the graph encoded file by GraphProt. Additionally, you will also need to provide the original fasta file, because the GraphProt output does not contain sequence identifiers/names. The sequences are not used for the classification, only the graph features. For how to create graph feature files see section [GraphProt](#graphprot). For more detailed information about the model see [run_grenc.py](#run_grencpy).
 
 ---
+## 2. Output file naming
+_Giving the name of the prefix of your result text file. If nothing here is specified, the output file will be named result as default._
 
-## 2. Input Sequence File in Fasta Format
+### 3. Input Sequence Files
 
+You will be asked to enter the full path and name of the  input file or input files for the Merged or GrEnc ML classifiers. The only requirement to the sequence input is, that it needs to be readable by BioPython's `SeqIO.parse` method. _If you type "default" the ML classifier will perform the output on the test set from our publication including XXX sequences (see `merged_test_file_XX `)._ 
+If the ML classifier GrEnc or Merged are selected in step 1 you will need to provide a `.gspan.gz.feature`-file created by GraphProt. If you chose the StrEnc classifier, you will need to provide the path to the output created by pysster. 
 
-After choosing whether to test or predict new sequences, you will be asked to enter the path to a `.fasta` file. The entered file may also end in `.fa`. The only requirement is, that it needs to be readable by BioPython's `SeqIO.parse`. You may also choose the default option by typing "default". This will test the model on `merged_test_file_30.fasta`, which contains 30 sequences of each ncRNA type. 
-
-## 3. (Optional) for model GrEnc/Merged and StrEnc: Input Graph Encoding or Structure Encoding files
-
-Next, you will be asked to provide the path to the structure file, unless you chose "SeqEnc" for the model. The graphprot graph encoding file will need to end in `.gspan.gz.feature`, the pysster structure encoding will need to end in `pysster.txt`, otherwise the program will repeat the prompt to enter the file. If you chose the default option, you will not be asked to enter a structure/graph encoding file and the program will choose the corresponding file automatically. 
-
-Lastly, the program will read in the `.fasta` file (and the structure file if needed) and predict with the chosen model. If the number of graph feature vectors in the provided `.feature` file and sequences in the `.fasta` file do not match, the program will throw an error before prediction. If prediction does not fail, the output is written to the corresponding file and if the option "test" was chosen, the plots are created and saved in the results folder.
-
-## 4. Output will be created automatically
-
-The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model.
+The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model
 
 
-Different models for selection in predict_ncRNAs.py or as standalone version:
+# Standalone versions of the ML classifiers able to select in the python script ‘predict_ncRNAs.py’:
 
-## run_[model].py
-The `run_[model].py` programs are standalone versions of each of the models. They require the fasta file and (if needed) the graph/structure file as run parameters. The output will be written to `_[model]_predictions.txt`. The order of the entered files is not flexible. 
 
-### run_merged.py
-This model combines the GrEnc and SeqEnc model by concatenating the last layer before the output. It has the highest accuracy of the four models and uses a mix of primary sequence and secondary structure graph encoding created by [GraphProt](#graphprot). The model consists of a convolutional neural network for the sequence input and a fully connected neural network for the graph input. The graph input file needs to contain the corresponding feature vectors in the same order as the sequence input. Both files need to be provided as a run parameter when executing the python script. If you are interested in the exact architecture of the network load `models/merged_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+## run_merged.py
+This model uses a late integration of  the GrEnc and SeqEnc model by concatenating them with an additional last hidden layer before the softmax and output layer. The SeqEnc model consists of a convolutional neural network (CNN) for the sequence input and the GrEnc a fully connected neural network (NN) for the GraphProt input. The graph input file and fasta file need to have the same order of sequences in the input files. Both files need to be provided as a run parameter when executing the python script. If you are interested in the exact architecture of the network load `models/merged_fold7.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
-### run_strenc.py
-This model uses the structure encoding created by [pysster](#pysster) combined with the primary sequence as input. Pysster uses RNAfold by Vienna RNA to predict the secondary structure and then annotates each nucleotide with the substructure it belongs to (F: 5'-end; I: Internal Loop; M: Multi Loop; S: Stem; H: Hairpin Loop; T: 3'end). The nucleotide and structure sequence are then combined through arbitrary encoding of each combination of nucleotide and structure (See [Publication](#publication)). This combined sequence is then used as input for a convolutional neural network. If you are interested in the exact architecture of the network load `models/strenc_fold7.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+## run_strenc.py
+This model uses the structure encoding created by [pysster](#pysster) combined with the primary sequence as input. Pysster uses RNAfold by Vienna RNA (ref) to predict the secondary structure and then annotates each nucleotide with the substructure it belongs to (F: 5'-end; I: Internal Loop; M: Multi Loop; S: Stem; H: Hairpin Loop; T: 3'end) (ref). This encoding is derived from the dot-bracket notation by Pysster. 
+
+Our model reads in the original nucleotide sequence as well as the structure sequence from the file created by Pysster. These two sequences are then combined into one sequence using an arbitrary encoding, for instance if at position i of the original nucleotide sequence an "A" nucleotide is present, and position i of the structure sequence created by Pysster is part of an inner loop (encoded as "I" by Pysster), then the i-th position of our sequence is encoded as an "E". The codes for all combinations of nucleotides and structure codes can be found in Table A1 of the [Publication](#publication). This combined sequence is then used as input for a convolutional neural network (CNN). If you are interested in the exact architecture of the network load `models/strenc_fold7.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_strenc.py path/to/fasta.fasta path/to/structure_pysster.txt`
+
+
+## run_grenc.py
+This model uses the graph encoding created by [GraphProt](#graphprot) as input for an ANN model, but you will also need to provide the fasta file, as the GraphProt vectors do not contain sequence identifiers. The graph encoding comes in the form of 32,768 features in a sparse vector. This encoding is first derived using secondary structure prediction with the tool ‘RNAshapes’ ([PubMed](https://pubmed.ncbi.nlm.nih.gov/16357029/)). The secondary structure is then encoded into a vector using a graph kernel approach that derives long distance graphical features of the secondary structures. The ML classifier is built with a fully connected Neural Network (NN). If you are interested in the exact architecture of the network load `models/grenc_fold2.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 ### run_grenc.py
 This model uses the graph encoding created by [GraphProt](#graphprot) as input for an ANN model. The graph encoding comes in the form of 32,768 features in a sparse vector. This encoding is first derived using secondary structure prediction with the tool "RNAstruct". The secondary structure is then encoded into a vector using a graph kernel approach that derives long distance graphical features of the secondary structures. While this model only uses the graph encoding as input, you still need to provide the original fasta file such that the model can find the sequence identifiers for the output. The feature vectors do not contain any identifiers and are simply in the same order as the sequences in the fasta file. If you are interested in the exact architecture of the network load `models/grenc_fold2.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
+
 Example call: `python test_grenc.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
-### run_seqenc.py
-This model uses just the primary sequence as input. It is encoded into numerical values and padded to a length of 12,000 nt. For the classification, a convolutional neural network is used. This model does not need any additional input other than the fasta file. If you are interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
+## run_seqenc.py
+This model uses just the primary sequence of a fasta file as input. is the sequence is encoded into numerical values and padded to a length of 12,000 nt. For the classification, a convolutional neural network (CNN) is used. If you are interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. Alternatively, you can find the architecture described in the [Publication](#publication). 
 
 Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 ---
-## Required Input files:
 
-### Fasta File
+## File “benchmark_classifiers.py”: Benchmark our ML classifiers on given test datasets including ncRNA labels
+This python script allows you to check the performance of our classifiers on a labelled set of ncRNA sequences. As input the script needs the corresponding input files for the different ML classifier provided in the Git repository. Also an additional text file ‘.txt’ is needed with the same order of the input sequences for the fasta file and/or additional structural files. The ‘.txt’ file has to be the same name like the prefix of the other input files and is containing the following structure: ‘name \t label \n’. The name is the name form the ncRNA sequence in the other input files and the label is lncRNA, miRNA, rRNA, snRNA, snoRNA or tRNA (Important: case sensitive). Additionally, to the aforementioned `_[modelname]_predictions.txt`, this method also creates a text file `classification_scores.txt` in the results folder, which displays a classification report from scikit-learn (including class-wise and overall recall, precision and F1-score) as well as the Matthews Correlation Coefficient (MCC) for the prediction. A confusion matrix as a figure will be created in `confusion_matrix.png`. 
 
 For the models Merged and SeqEnc, the primary sequence needs to be entered as a fasta file with ending `.fasta` or `.fa`. It does not matter if the sequence is written in a single line or with line breaks, as long as the file is readable by Biopythons SeqIO module. The output file will have the same name as the fasta file except for the `.fasta` or `.fa` ending but with `_[model]_predictions.txt` as a suffix. For the output, the sequence identifiers up until the first space from the fasta files are used. If you wish to get results about the accuracy of our models on a test set with known labels, you will need to edit the fasta such that each header is of the form `>sequenceid rna_type`, where rna_type is one of "lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA" and use the python script `benchmark_classifiers.py`
 
-If you want to use the models GrEnc or Merged for predicting ncRNAs based on graph encoded secondary structure you have to use the ncRNA sequence fasta file as input for GraphProt to create the needed input file beforehand:
+# Input files: How to create structural input files for ncRNA classification
+## Fasta File
+The Fasta file can have a `.fasta` or `.fa` ending. It does not matter if after the header line starting with `>` the sequence is written in a single line or with line breaks over multiple lines, as both of these methods are readable by BioPythons SeqIO module. 
 
-### GraphProt
-To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will need to be able to execute `fasta2shrep_gspan.pl` and `EDeN`. To create the Graph Feature files execute:
 
-1. `path/to/fasta2shrep_gspan.pl -abstr -stdout -M 3 -wins '150,' -shift '25' -fasta {fasta_file} -t 3 | gzip > {gspan_file}`
+## GraphProt
+To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will need to be able to execute `fasta2shrep_gspan.pl` and `EDeN`. To create the Graph Feature files, execute:
 
-2. `path/to/EDeN -a FEATURE -i {gspan_file}`, 
+1. `path/to/fasta2shrep_gspan.pl -abstr -stdout -M 3 -wins '150,' -shift '25' -fasta path/to/fasta -t 3 | gzip > path/to/gspan`
 
-where fasta_file is the path to the fasta file you want to predict and gspan_file is a new file that ends in `.gspan.gz`
-Confirm the output file now ends in `.gspan.gz.feature`, then you are ready to predict the sequences from the fasta file.
+2. `path/to/EDeN -a FEATURE -i path/to/gspan`, 
 
-If you want to use the model StrEnc for predicting ncRNAs based on structure encoding of the secondary structure you have to use the ncRNA sequence fasta file as input for Pysster to create the needed input file beforehand:
+where path/to/fasta is the path to the fasta file you want to predict and path/to/gspan is a new file that ends in `.gspan.gz`. This will create a new file in the same directoy as your gspan file that ends in `.gspan.gz.feature`. This is the graph features file you will need to provide to the Merged and GrEnc models.
+If you successfully created `.gspan.gz.feature`, then you are ready to predict the sequences from the fasta file.
 
-### Pysster
+
+## Pysster
+If you want to use the StrEnc model for classification, you will need to provide a structure file created by Pysster.
 To install Pysster, refer to https://github.com/budach/pysster. You need to be able to import and run `predict_structures()`.
 In Python, run:
 
 1. `from pysster.utils import predict_structures`
-2. `predict_structures(fasta_file, output_pysster.txt, annotate=True)`, 
+2. `predict_structures(path/to/fasta, path/to/pysster.txt, annotate=True)`, 
 
-where fasta file is the corresponding file to your sequence. Make sure the Pysster output file ends in `_pysster.txt`.
+where path/to/fasta is the corresponding file to the sequences you want to predict and path/to/pysster is the path to the file you will have to provide when choosing the StrEnc model. Before using the model, confirm that the pysster output is of the following format:
 
-# For Developers:
+`>sequence name`
+`nucleotide sequence`
+`structure sequence`
 
-If you wish to benchmark our model with a new test file, we recommend you use `benchmark_classifiers.py`. This script has the same functionality as `predict_ncRNAs.py`, but additionally to the results file outputs `results/classification_scores.txt`, which contains scikit-learns classification report and Matthews Correlation Coefficient of the results and `results/confusion_matrix.png` which uses Plotnine to create a plot of the normalized confusion matrix of the predictions. For `benchmark_classifiers.py` to work your fasta file sequence headers need to be of the following format:
+Example: 
 
-`>sequence_id rna_type` where `rna_type` has to be one of `lncRNA`, `miRNA`, `rRNA`, `snRNA`, `snoRNA` or `tRNA` (case sensitive). Make sure, `sequence_id` does not contain spaces. However, you may also simply use `predict_ncRNAs.py`
+`>URS0000CB8740_9606 miRNA`
+`ATCTGCTCGCCGGAGCTCACTCT`
+`FFFFSSSSHHHHSSSSTTTTTTT`
+
+Every third line needs to contain the structure sequence made up of one of the six structure codes (5'-End: "F"; Stem: "S"; Inner Loop: "I"; Multi Loop: "M"; Hairpin Loop: "H"; 3'-End: "T"). The python script then creates the input for the StrEnc model by combining the second and third line into an arbitrary encoding, e.g. an A nucleotide as part of an inner loop ("I") is encoded as the letter "E". The full table for each combination of nucleotide and structure can be found in the [Publication](#publication). For the above example, the created input sequence would be
+
+`QLULFIYIJAAJFWFIBSZSBSB`
 
 ## Datasets available for retraining the models and testing
+Uploaded you find the training and validation fasta and structural files for our best performing models GrEnc, StrEnc, SeqEnc and Merged. The sequences are all downloaded from the RNAcentral (ref) and contain the …. 
 
-Training and validation data sets for models Merged and StrEnc -> `fasta_files/train_fold_7.fasta`; `fasta_files/val_fold_7.fasta`
+Training and validation data sets for model Merged and StrEnc -> `fasta_files/train_ StrEnc.fasta`; `fasta_files/val_StrEnc.fasta`
 
-Training and validation data sets for models GrEnc -> `fasta_files/train_fold_2.fasta`; `fasta_files/val_fold_2.fasta`
+Training and validation data sets for model GrEnc -> `fasta_files/train_GrEnc.fasta`; `fasta_files/val_GrEnc.fasta`
 
-Training and validation data sets for models SeqEnc -> `fasta_files/train_fold_8.fasta`; `fasta_files/val_fold_8.fasta`
+Training and validation data sets for model SeqEnc -> `fasta_files/train_SeqEnc.fasta`; `fasta_files/val_SeqEnc.fasta`
+Training and validation data sets for model Merged -> `fasta_files/train_SeqEnc.fasta`; `fasta_files/val_SeqEnc.fasta`
 
-If you wish to train a new model on the same set of sequences, simply combine one of the train/val files to create the full training set.
+For our benchmarks we used the test set -> `fasta_files/rnacentraltestset.fasta`
 
-RNAcentral test set -> `fasta_files/rnacentral_testset.fasta`
 
-RNAcentral test set (reduced to fit ncRDense) -> `fasta_files/rnacentral_testset_ncrdense.fasta`
-
-Rfam test set (reduced to fit ncRDense and our models) -> `fasta_files/rfam_testset_ncrdense.fasta` [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5540506/)
-
-To retrieve the exact model parameters for recreating the classifiers load the model hdf5 files (`model_files/[model]_foldx.hdf5`) using keras. You may then use `model.summary()` for the parameters. For further parameters see the publication. 
 
 # Publication
 
 XXXXXXXXXXXXXX Insert Link to Publication here
+
+
+

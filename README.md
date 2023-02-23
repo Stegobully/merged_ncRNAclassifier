@@ -46,7 +46,7 @@ _Giving the name of the prefix of your result text file. If nothing here is spec
 You will be asked to enter the full path and name of the  input file or input files for the Merged or GrEnc ML classifiers. The only requirement to the sequence input is, that it needs to be readable by BioPython's `SeqIO.parse` method. _If you type "default" the ML classifier will perform the output on the test set from our publication including XXX sequences (see `merged_test_file_XX `)._ 
 If the ML classifier GrEnc or Merged are selected in step 1 you will need to provide a `.gspan.gz.feature`-file created by GraphProt. If you chose the StrEnc classifier, you will need to provide the path to the output created by pysster. 
 
-The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `\_[model]\_predictions.txt`, where model is the chosen model
+The output consists of a .txt file in the results folder. It has the same name as the fasta file (without the .fasta suffix) followed by `_[model]_predictions.txt`, where model is the chosen model
 
 
 # Standalone versions of the ML classifiers able to select in the python script ‘predict_ncRNAs.py’:

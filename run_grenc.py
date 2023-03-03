@@ -10,7 +10,7 @@ from sklearn.preprocessing import OneHotEncoder
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def test_grenc(sequence_df, graph_input, fasta_file_input):
+def test_grenc(graph_input, fasta_file_input = ""):
 
     # This method loads the trained GrEnc model and tests it on graph features
     # sequence_df is a dataframe that has the sequence IDs as row names and at least one column named "Seq"
@@ -18,20 +18,33 @@ def test_grenc(sequence_df, graph_input, fasta_file_input):
     # graph_input is the path to the file in which the corresponding graph features are saved
     # These graph features must match the sequences in sequence_df
 
-    # Test if number of graph feature vector is the same as number of sequences
-    if not data_processing.test_graphfeat_seq_match(sequence_df, graph_input):
-        print("Graph Feature file does not match sequence file. Exiting.")
-        sys.exit()
+    if fasta_file_input != "":
+        sequence_df = data_processing.read_fasta_file(fasta_file_input)
+        if not data_processing.test_graphfeat_seq_match(sequence_df, graph_input):
+            sys.exit()
+            # Read graph feature vector into the dataframe in a new column called "feature_vector"
+        sequence_df.drop(["Seq"], axis=1, inplace=True)
+        sequence_df = data_processing.read_graphprot_vectors(sequence_df, graph_input)
+    else:
+        i = 0
+        index_list = []
+        for line in open(graph_input):
+            index_list.append(f"sequence_{i}")
+            i = i+1
+        sequence_df = pd.DataFrame.from_dict({"id": index_list})
+        sequence_df.index = index_list
+        sequence_df = data_processing.read_graphprot_vectors(sequence_df,
+                                                             graph_input,
+                                                             verbose=False)
 
-    # Read graph feature vector into the dataframe in a new column called "feature_vector"
-    sequence_df = data_processing.read_graphprot_vectors(sequence_df,
-                                                         graph_input,
-                                                         fasta_file_input,
-                                                         verbose=True)
-    graph_input = np.array(sequence_df.feature_vector.to_list()).reshape(len(sequence_df.feature_vector),
-                                                                         len(sequence_df.feature_vector[0]))
+
+
+    # Test if number of graph feature vector is the same as number of sequences
+
+    graph_matrix = np.array(sequence_df.feature_vectors.to_list()).reshape(len(sequence_df.feature_vectors),
+                                                                         len(sequence_df.feature_vectors[0]))
     # Drop "Seq" and "feature_vector" from data frame to save on memory
-    sequence_df.drop(["Seq", "feature_vector"], axis=1, inplace=True)
+    sequence_df.drop(["feature_vectors"], axis=1, inplace=True)
 
     # Create a one hot encoder with the 6 possible RNA types to return the output as plain text
     rna_types = ["lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA"]
@@ -42,37 +55,45 @@ def test_grenc(sequence_df, graph_input, fasta_file_input):
     model = ks.models.load_model("model_files/grenc_fold2.hdf5")
 
     # Predict the ncRNA types from the two inputs
-    prediction = model.predict(graph_input)
+    prediction = model.predict(graph_matrix)
     # Return probability for each prediction
     pred_probabilities = [np.max(x) for x in prediction]
     # Convert results to ncRNA types
     results = ohe.inverse_transform(prediction)
     results = [x[0] for x in results]
 
-    return results, pred_probabilities
+    ids = sequence_df.index
+
+    return ids, results, pred_probabilities
 
 
 if __name__ == '__main__':
     # Exception for when the command is not properly executed with fasta and feature file
-    if len(sys.argv) != 3:
-        print("Please enter a fasta file and a graph features file when running the file\n"
+    if len(sys.argv) not in (2, 3) :
+        print("Please enter a graph features file when running the file\n"
+              "Optionally, you may also enter the fasta file used for the creation of the feature file.\n"
+              "If you do not provide the fasta file, the output rows will simply have 'sequence_n' as identifier.\n"
+              "Run the file by providing the path(s) to the input(s) as run parameter(s)"
               "Example:\n"
-              "python run_grenc.py merged_test_file_30.fasta graphprot_output/merged_test_file_30.gspan.gz.feature")
+              "python run_grenc.py graphprot_output/merged_test_file_30.gspan.gz.feature\n"
+              "or\n"
+              "python run_grenc.py graphprot_output/merged_test_file_30.gspan.gz.feature merged_test_file_30.fasta\n")
     else:
-        fasta_file_input = sys.argv[1]
-        graph_input = sys.argv[2]
+        graph_input = sys.argv[1]
+        if len(sys.argv) == 3:
+            fasta_file_input = sys.argv[2]
+        else:
+            fasta_file_input = ""
 
         # Read in sequences as dataframe
-        sequence_df = data_processing.read_fasta_file(fasta_file_input, labels=False)
-        sequence_ids = sequence_df.index
 
         # Load and test the model
-        results, pred_probabilities = test_grenc(sequence_df, graph_input, fasta_file_input)
+        ids, results, pred_probabilities = test_grenc(graph_input, fasta_file_input)
 
         # Save output to file
         output_file = f"results/{fasta_file_input.split('.')[0]}_grenc_predictions.txt"
         output = open(output_file, "w")
-        for id, pred, pred_probability in zip(sequence_ids, results, pred_probabilities):
+        for id, pred, pred_probability in zip(ids, results, pred_probabilities):
             output.write(f"{id}\t{pred}\t{pred_probability}\n")
         output.close()
         print(f"Results are saved in {output_file}")

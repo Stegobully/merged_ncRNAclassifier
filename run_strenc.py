@@ -10,40 +10,47 @@ from sklearn.preprocessing import OneHotEncoder
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def test_strenc(sequence_df, structure_input):
+def test_strenc(structure_input):
 
     # This method loads the trained Sequence model and tests it on sequences
     # sequence_df is a dataframe that has the sequence IDs as row names and at least one column named "Seq"
     # in which Sequences are stored as uppercase Strings including only IUPAC codes for nucleotides
 
+    # Open the input file
     pysster_file = open(structure_input)
     lines = pysster_file.readlines()
 
-    seq_id = ""
-    nt_seq = ""
-    i = 1
-    sequence_df["structure_sequence"] = ""
+    id_list = []
+    structure_list = []
 
+    # Variable i is used to determine what line we are in
+    # using the modulo operation, we can determine, if the current line contains identifier, sequence or structure
+    i = 0
     for line in lines:
-        if line.startswith(">"):
-            seq_id = line.split(" ")[0].strip(">")
+        # Read in identifiers
+        if i % 3 == 0:
+            id_list.append(line.strip(">").split(" ")[0])
+        # Save the most recent nucleotide sequence
+        elif i % 3 == 1:
+            sequence = line.strip("\n")
+        # Read in structure sequences
         elif i % 3 == 2:
-            nt_seq = line.strip("\n")
-        elif i % 3 == 0:
-            struct_seq = line.strip("\n")
-            sequence_df["structure_sequence"][seq_id] = data_processing.struc_annotator(nt_seq, struct_seq)
-
+            struct_seq = (line.strip("\n"))
+            # Annotate the structure sequence using struc_annotator()
+            structure_list.append(data_processing.struc_annotator(sequence, struct_seq))
         i = i + 1
 
+    pysster_file.close()
+
+    structure_df = pd.DataFrame.from_dict({"id": id_list, "structure": structure_list})
+
+
     # Pad the structure sequences to the fixed length of 12,000
-    structure_sequences = data_processing.pad_sequences(sequence_df["structure_sequence"], 12000)
+    structure_sequences = data_processing.pad_sequences(structure_df.structure, 12000)
     # Encode the structure sequence into integers
     structure_sequences = data_processing.struct_list_annotator(structure_sequences)
     # Transform the list of lists of integers into one matrix used as input for the model
     structure_sequences = data_processing.transform_seq_into_ml_input(structure_sequences)
-
-    # Drop "Seq" and "structure_sequence" from data frame to save on memory
-    sequence_df.drop(["Seq", "structure_sequence"], axis=1, inplace=True)
 
     # Create a one hot encoder with the 6 possible RNA types to return the output as plain text
     rna_types = ["lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA"]
@@ -61,29 +68,25 @@ def test_strenc(sequence_df, structure_input):
     results = ohe.inverse_transform(prediction)
     results = [x[0] for x in results]
 
-    return results, pred_probabilities
+    return id_list, results, pred_probabilities
 
 
 if __name__ == '__main__':
-    # Exception for when the command is not properly executed with fasta and feature file
-    if len(sys.argv) != 3:
-        print("Please enter a fasta and a structure file when running the file\n"
+    # Exception for when the command is not properly executed with structure file
+    if len(sys.argv) != 2:
+        print("Please enter a structure file when running the file\n"
               "Example:\n"
-              "python run_strenc.py merged_test_file_30.fasta pysster_output/merged_test_file_30_pysster.txt")
+              "python run_strenc.py pysster_output/merged_test_file_30_pysster.txt")
     else:
-        fasta_file_input = sys.argv[1]
-        structure_input = sys.argv[2]
-        # Read in sequences as dataframe
-        sequence_df = data_processing.read_fasta_file(fasta_file_input, labels=False)
-        sequence_ids = sequence_df.index
+        structure_input = sys.argv[1]
 
         # Load and test the model
-        results, pred_probabilities = test_strenc(sequence_df, structure_input)
+        ids, results, pred_probabilities = test_strenc(structure_input)
 
         # Save output to file
-        output_file = f"results/{fasta_file_input.split('.')[0]}_strenc_predictions.txt"
+        output_file = f"{structure_input.split('.')[0]}_strenc_predictions.txt"
         output = open(output_file, "w")
-        for id, pred, pred_probability in zip(sequence_ids, results, pred_probabilities):
+        for id, pred, pred_probability in zip(ids, results, pred_probabilities):
             output.write(f"{id}\t{pred}\t{pred_probability}\n")
         output.close()
         print(f"Results are saved in {output_file}")

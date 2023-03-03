@@ -10,11 +10,14 @@ from sklearn.preprocessing import OneHotEncoder
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def test_seqenc(sequence_df):
+def test_seqenc(fasta_file_input):
 
     # This method loads the trained Sequence model and tests it on sequences
     # sequence_df is a dataframe that has the sequence IDs as row names and at least one column named "Seq"
     # in which Sequences are stored as uppercase Strings including only IUPAC codes for nucleotides
+
+    # Read in the sequences from the fasta file input
+    sequence_df = data_processing.read_fasta_file(fasta_file_input)
 
     # Pad sequences to the fixed length of 12,000 nt by appending "_"
     sequence_input = data_processing.pad_sequences(sequence_df["Seq"], 12000)
@@ -42,7 +45,9 @@ def test_seqenc(sequence_df):
     results = ohe.inverse_transform(prediction)
     results = [x[0] for x in results]
 
-    return results, pred_probabilities
+    ids = sequence_df.index
+
+    return ids, results, pred_probabilities
 
 
 if __name__ == '__main__':
@@ -52,18 +57,16 @@ if __name__ == '__main__':
               "Example:\n"
               "python run_seqenc.py merged_test_file_30.fasta")
     else:
+        # Identify fasta file from run parameter
         fasta_file_input = sys.argv[1]
-        # Read in sequences as dataframe
-        sequence_df = data_processing.read_fasta_file(fasta_file_input, labels=False)
-        sequence_ids = sequence_df.index
 
         # Load and test the model
-        results, pred_probabilities = test_seqenc(sequence_df)
+        ids, results, pred_probabilities = test_seqenc(fasta_file_input)
 
         # Save output to file
-        output_file = f"results/{fasta_file_input.split('.')[0]}_seqenc_predictions.txt"
+        output_file = f"{fasta_file_input.split('.')[0]}_seqenc_predictions.txt"
         output = open(output_file, "w")
-        for id, pred, pred_probability in zip(sequence_ids, results, pred_probabilities):
+        for id, pred, pred_probability in zip(ids, results, pred_probabilities):
             output.write(f"{id}\t{pred}\t{pred_probability}\n")
         output.close()
         print(f"Results are saved in {output_file}")

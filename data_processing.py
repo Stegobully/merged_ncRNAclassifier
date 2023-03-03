@@ -15,7 +15,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 ########################################################################################################################
 
-def read_fasta_file(filename, labels=False):
+def read_fasta_file(filename):
     # This function reads in a single fasta file into a dataframe
     # The dataframe will contain one column "Seq" for the sequence
     # as well as columns for the rna type, rna subtype and sequence length
@@ -23,16 +23,9 @@ def read_fasta_file(filename, labels=False):
     # "labels" allows the user to add the rna type
     # to each fasta header and read them into the df as a column
 
-    if labels:
-        try:
-            sequence_dict = {rec.id: [str(rec.seq).upper(),
-                                      str(rec.description.split(" ")[1])] for rec in SeqIO.parse(filename, "fasta")}
-            df = pd.DataFrame.from_dict(sequence_dict, orient="index", columns=["Seq", "label"])
-        except:
-            print("Please make sure the fasta file headers are of format >SEQID rnatype")
-    else:
-        sequence_dict = {rec.id: [str(rec.seq).upper()] for rec in SeqIO.parse(filename, "fasta")}
-        df = pd.DataFrame.from_dict(sequence_dict, orient="index", columns=["Seq"])
+
+    sequence_dict = {rec.id: [str(rec.seq).upper()] for rec in SeqIO.parse(filename, "fasta")}
+    df = pd.DataFrame.from_dict(sequence_dict, orient="index", columns=["Seq"])
 
     df["length"] = df["Seq"].map(len)
 
@@ -76,14 +69,15 @@ def transform_seq_into_graphfeatures(fasta_file,
 ########################################################################################################################
 
 
-def read_graphprot_vectors(df, feature_file, fasta_file, verbose=True):
+def read_graphprot_vectors(df, feature_file):
     
     # This function reads in the feature vectors created by transform_seq_into_graphfeatures
     # You have to provide a dataframe with the corresponding sequence identifiers
-    # You also need to provide the path to the fasta file, as feature files don't contain sequence identifiers
+    # The order within the dataframe has to be the same as the rows in the feature file
     # The graphprot feature vectors are read in as sparse np vectors
     # verbose indicates, whether the name of the currently processed file is printed out
 
+    # Create empty column in which the feature vectors are written in
     df["feature_vector"] = None
     if feature_file.endswith(".feature"):
         try:
@@ -94,63 +88,38 @@ def read_graphprot_vectors(df, feature_file, fasta_file, verbose=True):
 
         lines = feature_file.readlines()
         feature_file.close()
-        if verbose:
-            print(f"Currently processing {feature_file}, number of vectors: {len(lines)}")
-        feature_vectors = []
+
+        df["feature_vectors"] = ""
         # Every line is saved as a vector where each entry is one feature
-        for line in lines:
-            feature_vectors.append(line.split(" "))
-        if not os.path.isfile(fasta_file):
-            print(f"Cannot find {fasta_file}")
-            sys.exit()
-        else:
-            # Read fasta IDs and vectors in the list of feature vectors in parallel
-            for vector, rec in zip(feature_vectors, SeqIO.parse(fasta_file, "fasta")):
-                # Create empty vector to fill with the features
-                unsparse_vector = np.zeros(32768)
-                for feature in vector:
-                    if feature != "":
-                        # a feature is of the form index:value, where index is the position in the feature vector
-                        unsparse_vector[int(feature.split(":")[0])] = feature.split(":")[1]
-                # The unsparse vector is saved as a sparse pandas array
-                df["feature_vector"][rec.id] = pd.Series(pd.arrays.SparseArray(unsparse_vector, fill_value=0))
-                del unsparse_vector
-    print("The graphs have been read in as sparse vectors")
+        for line, i in zip(lines, range(len(lines))):
+            # Create an empty vector to fill with the features
+            unsparse_vector = np.zeros(32768)
+            for feature in line.split(" "):
+                if feature != "":
+                    # Every feature is of the form "position:value", where position is the index in the vector
+                    # and value is the value for the feature
+                    unsparse_vector[int(feature.split(":")[0])] = feature.split(":")[1].strip("\n")
+            # Save the vector in the dataframe
+            df.feature_vectors[i] = unsparse_vector
+
     return df
-            
-########################################################################################################################
-
-
-def convert_sparse_matrix_to_sparse_tensor(gp_vec):
-    
-    # Adapted from: https://stackoverflow.com/questions/40896157
-    # /scipy-sparse-csr-matrix-to-tensorflow-sparsetensor-mini-batch-gradient-descent
-    # This function takes a list of sparse GraphProt feature vectors and converts them to a tensorflow tensor
-    
-    coo = sparse.coo_matrix(np.array(gp_vec.to_list()).reshape((len(gp_vec), len(gp_vec[1]))))
-    indices = np.mat([coo.row, coo.col]).transpose()
-    
-    return tf.SparseTensor(indices, coo.data, coo.shape)
 
 ########################################################################################################################
 
 
-def pad_sequences(seq_list, length, left=False, char="_"):
+def pad_sequences(seq_list, length, char="_"):
     
     # This function pads a list of sequences of nucleotides to a specified length
-    # seq_list is a list of sequences, length is the desired padding length
+    # seq_list is a column of a dataframe, length is the desired padding length
     # left indicates, on which side the sequences are padded (True => padded on the left)
     # char is the padding character
     # For sequences that are longer than the specified length,
-    # a trim is applied with "left" indicating which side is trimmed
-    
-    if not left:
-        pad_list = seq_list.str.ljust(length, char)
-        pad_list = pad_list.map(lambda x: x[0:length])
-    else:
-        pad_list = seq_list.str.rjust(length, char)
-        pad_list = pad_list.map(lambda x: x[len(x)-length:len(x)])
-        
+
+    # Pad sequences on the right with the provided character
+    pad_list = seq_list.str.ljust(length, char)
+    # Reduce length of sequences that are to long
+    pad_list = pad_list.map(lambda x: x[0:length])
+
     return pad_list
 
 ########################################################################################################################
@@ -177,10 +146,11 @@ def encode_nucleotides(seq_list):
     # This function encodes nucleotides into integer values
     # Allowed characters include the IUPAC ambiguity codes, as well as the padding character "_"
     # Unknown characters will be assigned the value 16
-    # Input is a list of padded sequences
-    # Output is a list of list of integers encoding the sequence
+    # Input is a column of a dataframe of padded sequences
+    # Output is a list of lists of integers encoding the sequence
     
-    categories = ["A", "C", "G", "T", "N", "R", "K", "S", "Y", "M", "W", "B", "H", "D", "V", "_"] 
+    categories = ["A", "C", "G", "T", "N", "R", "K", "S", "Y", "M", "W", "B", "H", "D", "V", "_"]
+    # create scikit-learns ordinal encoder
     ordi = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=16)
     ordi.fit(np.array(list(categories)).reshape(-1, 1))
     

@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # Set the standard labels file
     if labels_file.upper() == "DEFAULT":
-        labels_file = "datasets/small_testset_30_labels.txt"
+        labels_file = "testing_datasets/small_testset_30_labels.txt"
 
     # Read the labels into a list
     labels_file = open(labels_file, "r")

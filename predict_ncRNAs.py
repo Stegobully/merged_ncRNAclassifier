@@ -73,7 +73,7 @@ def predict_ncRNAs():
     if fasta_file_input.upper() == "DEFAULT"\
             or graph_input.upper() == "DEFAULT"\
             or struct_input.upper() == "DEFAULT":
-        fasta_file_input = "datasets/small_testset_30.fasta"
+        fasta_file_input = "testing_datasets/small_testset_30.fasta"
         graph_input = "graphprot_output/small_testset_30_graphprot.feature"
         struct_input = "pysster_output/small_testset_30_pysster.txt"
 

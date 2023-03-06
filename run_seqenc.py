@@ -55,7 +55,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Please enter a fasta file when running the file\n"
               "Example:\n"
-              "python run_seqenc.py merged_test_file_30.fasta")
+              "python run_seqenc.py small_testset_30.fasta")
     else:
         # Identify fasta file from run parameter
         fasta_file_input = sys.argv[1]

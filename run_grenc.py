@@ -75,9 +75,9 @@ if __name__ == '__main__':
               "If you do not provide the fasta file, the output rows will simply have 'sequence_n' as identifier.\n"
               "Run the file by providing the path(s) to the input(s) as run parameter(s)"
               "Example:\n"
-              "python run_grenc.py graphprot_output/merged_test_file_30.gspan.gz.feature\n"
+              "python run_grenc.py graphprot_output/small_testset_30_graphprot.feature\n"
               "or\n"
-              "python run_grenc.py graphprot_output/merged_test_file_30.gspan.gz.feature merged_test_file_30.fasta\n")
+              "python run_grenc.py graphprot_output/small_testset_30_graphprot.feature small_testset_30.fasta\n")
     else:
         graph_input = sys.argv[1]
         if len(sys.argv) == 3:

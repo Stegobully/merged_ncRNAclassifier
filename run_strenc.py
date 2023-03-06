@@ -76,7 +76,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Please enter a structure file when running the file\n"
               "Example:\n"
-              "python run_strenc.py pysster_output/merged_test_file_30_pysster.txt")
+              "python run_strenc.py pysster_output/small_testset_30_pysster.txt")
     else:
         structure_input = sys.argv[1]
 
@@ -92,4 +92,4 @@ if __name__ == '__main__':
         print(f"Results are saved in {output_file}")
 
     # change "from collections import Mapping" to "from collections.abc import Mapping" in linecloud.py
-    # predict_structures("merged_test_file_30.fasta", "merged_test_file_30_pysster.txt", annotate=True)
+    # predict_structures("small_testset_30.fasta", "small_testset_30_pysster.txt", annotate=True)

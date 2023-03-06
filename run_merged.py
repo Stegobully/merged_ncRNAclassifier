@@ -70,7 +70,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Please enter a fasta file and a graph features file when running the file\n"
               "Example:\n"
-              "python run_merged.py merged_test_file_30.fasta graphprot_output/merged_test_file_30.gspan.gz.feature")
+              "python run_merged.py small_testset_30.fasta graphprot_output/small_testset_30_graphprot.feature")
     else:
         # Identify run parameters
         fasta_file_input = sys.argv[1]

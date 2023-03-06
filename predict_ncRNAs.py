@@ -73,9 +73,9 @@ def predict_ncRNAs():
     if fasta_file_input.upper() == "DEFAULT"\
             or graph_input.upper() == "DEFAULT"\
             or struct_input.upper() == "DEFAULT":
-        fasta_file_input = "merged_test_file_30.fasta"
-        graph_input = "graphprot_output/merged_test_file_30.gspan.gz.feature"
-        struct_input = "pysster_output/merged_test_file_30_pysster.txt"
+        fasta_file_input = "datasets/small_testset_30.fasta"
+        graph_input = "graphprot_output/small_testset_30_graphprot.feature"
+        struct_input = "pysster_output/small_testset_30_pysster.txt"
 
     # Ask user to provide a path to the output or write to the standard output name
     print("\nPlease input the path to the file, to which you want the predictions to be written.\n"

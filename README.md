@@ -41,7 +41,7 @@ classifier you can use the python script `benchmark_classifiers.py`, which addit
 Correlation Coefficient). This script requires the labels of each sequence to be provided in the fasta file headers, 
 so that the scores can be calculated.
 
-# File `predict_ncRNAs.py`: ncRNA classifier with step-by-step manual in the console
+# `predict_ncRNAs.py`: ncRNA classifier with step-by-step manual in the console
 The executable python script `predict_ncRNAs.py` provides a step-by-step manual in the console and always needs a 
 standard fasta file of RNA sequences as input for classification into tRNA, rRNA, snoRNA, snRNA, miRNA and lncRNA. The 
 user will be asked to enter the path to the output file. Alternatively, the output file for all individual ncRNA 
@@ -102,10 +102,10 @@ Alternatively, you can also validate the results from out publication. For how t
 our results, see [Datasets](#datasetsavailableforretrainingthemodelsandtesting)
 
 
-# Standalone versions of the ML classifiers able to select in the python script ‘predict_ncRNAs.py’:
+# Standalone versions of the ML classifiers able to select in the python script `predict_ncRNAs.py`:
 
 
-## run_merged.py
+## `run_merged.py`
 This model uses a late integration of the GrEnc and SeqEnc model by concatenating them within the last hidden layer 
 before the softmax output layer. The SeqEnc model consists of a convolutional neural network (CNN) for the sequence 
 input and the GrEnc a fully connected neural network (NN) for the GraphProt input. The graph input file and fasta file 
@@ -116,7 +116,7 @@ Alternatively, you can find the architecture described in the [Publication](#pub
 
 Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
-## run_strenc.py
+## `run_strenc.py`
 This model uses the structure encoding created by [pysster](#pysster) combined with the primary sequence as input. 
 Pysster uses RNAfold by [Vienna RNA](http://rna.tbi.univie.ac.at/) to predict the secondary structure and then 
 annotates each nucleotide with the substructure it belongs to (F: 5'-end; I: Internal Loop; M: Multi Loop; S: Stem; 
@@ -135,7 +135,7 @@ in the [Publication](#publication).
 Example call: `python test_strenc.py path/to/pysster_output.txt`
 
 
-## run_grenc.py
+## `run_grenc.py`
 This model uses the graph encoding created by [GraphProt](#graphprot) as input for an ANN model. The graph encoding 
 comes in the form of 32,768 features in a feature vector. This encoding is first derived within GraphProt using 
 secondary structure prediction with the tool ‘RNAshapes’ ([PubMed](https://pubmed.ncbi.nlm.nih.gov/16357029/)). The 
@@ -154,7 +154,7 @@ Example call without fasta: `python test_grenc.py path/to/graph_enc.gspan.gz.fea
 Example call with fasta: `python test_grenc.py path/to/graph_enc.gspan.gz.feature path/to/fasta.fasta`
 
 
-## run_seqenc.py
+## `run_seqenc.py`
 This model uses just the primary sequence of a fasta file as input. The sequence is encoded into numerical values and 
 padded to a length of 12,000 nt. For the classification, a convolutional neural network (CNN) is used. If you are 
 interested in the exact architecture of the network load `models/seqenc_fold8.hdf5` in a python script using keras' 
@@ -165,8 +165,8 @@ Example call: `python test_seqenc.py path/to/fasta.fasta`
 
 ---
 
-## File “benchmark_classifiers.py”: Benchmark our ML classifiers on given test datasets including ncRNA labels
-This python script allows you to check the performance of our classifiers on a labelled set of ncRNA sequences. As 
+## `benchmark_classifiers.py`: Benchmark our ML classifiers on given test datasets including ncRNA labels
+This python script allows you to check the performance of our classifiers on a labeled set of ncRNA sequences. As 
 input the script needs the corresponding input files for the different ML classifiers provided in the Git repository. 
 Also, an additional text file is needed with the same order of the input sequences for the fasta file and/or additional 
 structural files. The file has to have one line for each sequence in the same order as the input. Each line needs to 

@@ -231,9 +231,16 @@ found in the [Publication](#publication). For the above example, the created inp
 
 ### Training datasets
 Uploaded you find the training and validation fasta and structural files for our best performing models GrEnc, StrEnc, 
-SeqEnc and Merged. The sequences are all downloaded from the [RNAcentral](https://rnacentral.org/) and contain the …. 
+SeqEnc and Merged. The sequences are all downloaded from the [RNAcentral](https://rnacentral.org/) and contain the 
+RNAcentral identifier, the RNA type and the nucleotide sequence.
 
-Training and validation data sets for model Merged and StrEnc -> `training_datasets/strenc_trainset.txt`; 
+Example:
+
+`>URS0000D51384_8932 miRNA`
+
+`CTGTCGGAGCCGATGTTCTAGCT`
+
+Training and validation data sets for model StrEnc -> `training_datasets/strenc_trainset.txt`; 
 `training_datasets/strenc_valset.txt`
 
 Training and validation data sets for model GrEnc -> The Graph Feature files exceed the storage limit, if you wish
@@ -244,6 +251,7 @@ For how to create the graph encoding, see section [GraphProt](#graphprot) and tr
 
 Training and validation data sets for model SeqEnc -> `training_datasets/seqenc_trainset.fasta`; 
 `training_datasets/seqenc_valset.fasta`
+
 Training and validation data sets for model Merged -> `training_datasets/merged_trainset.fasta`;
 `training_datasets/merged_valset.fasta`. You will also need the Graph Feature files. To retrieve the files created by 
 GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@uni-greifswald.de. Alternatively, you 

@@ -1,14 +1,13 @@
 import os
 import pandas as pd
-pd.options.mode.chained_assignment = None  # default='warn'
-
-# Needed for testing the models
 import run_merged
 import run_grenc
 import run_seqenc
 import run_strenc
+pd.options.mode.chained_assignment = None  # default='warn'
 
-def predict_ncRNAs():
+
+def predict_ncrnas():
 
     # The user will first be asked a couple of question to determine what model they want to use
     # what sequences (in the form of a fasta file) they want to predict,
@@ -31,18 +30,26 @@ def predict_ncRNAs():
                    or fasta_file_input.upper() == "DEFAULT"):
             fasta_file_input = input("Please enter a valid fasta path or 'default'\n")
 
-
     # Here the user has to enter the graph feature file path created by GraphProt if the model requires it
     graph_input = ""
-    if model.upper() in {"MERGED", "GRENC"} and fasta_file_input.upper() != "DEFAULT":
+    if model.upper() == "GRENC":
         print("\nThe model you selected requires a graph features input file.\n"
-              "You will now need to enter the path to the corresponding graph feature file created by GraphProt.\n"
+              "You will now need to enter the path to a graph feature file created by GraphProt.\n"
               "This file needs to have the ending '.feature'.\n"
               "For how to create new gspan feature files see section 'GraphProt' of the readme.\n"
               "Alternatively, you can enter 'default' to choose the default option.\n")
         while not ((os.path.isfile(graph_input) & graph_input.endswith(".feature"))
-                or graph_input.upper() == "DEFAULT"):
+                   or graph_input.upper() == "DEFAULT"):
             graph_input = input("Please enter a valid path to a feature file or 'default'\n")
+
+    if model.upper() == "MERGED" and fasta_file_input.upper() != "DEFAULT":
+        print("\nThe model you selected requires a graph features input file.\n"
+              "You will now need to enter the path to the corresponding graph feature file created by GraphProt.\n"
+              "This file needs to have the ending '.feature'.\n"
+              "For how to create new gspan feature files see section 'GraphProt' of the readme.\n")
+        while not ((os.path.isfile(graph_input) & graph_input.endswith(".feature"))
+                   or graph_input.upper() == "DEFAULT"):
+            graph_input = input("Please enter a valid path to a feature file\n")
 
     # GraphProt feature files do not contain sequence identifiers
     # If the user wishes to provide sequence identifiers in the output, they will need to provide a path
@@ -52,8 +59,8 @@ def predict_ncRNAs():
         print("\nThe graph feature files for the GrEnc model do not contain sequence identifiers \n" 
               "If you want the output to contain sequence identifiers, you will need to provide the fasta file \n"
               "used for the creation of the graph feature file. Alternatively, the results will be in the same \n"
-              "order as the feature vectors, but simply names 'sequence_n', \n"
-               " where n is the row number of the feature vector.\n"
+              "order as the feature vectors, but simply named 'sequence_n', \n"
+              "where n is the row number of the feature vector.\n"
               "If you want to choose this option simply press enter.\n")
         while not ((os.path.isfile(fasta_file_input) & fasta_file_input.endswith((".fa", ".fasta"))
                    or fasta_file_input == "")):
@@ -74,8 +81,8 @@ def predict_ncRNAs():
             or graph_input.upper() == "DEFAULT"\
             or struct_input.upper() == "DEFAULT":
         fasta_file_input = "testing_datasets/small_testset_30.fasta"
-        graph_input = "graphprot_output/small_testset_30_graphprot.feature"
-        struct_input = "pysster_output/small_testset_30_pysster.txt"
+        graph_input = "testing_datasets/small_testset_30_graphprot.feature"
+        struct_input = "testing_datasets/small_testset_30_pysster.txt"
 
     # Ask user to provide a path to the output or write to the standard output name
     print("\nPlease input the path to the file, to which you want the predictions to be written.\n"
@@ -117,13 +124,18 @@ def predict_ncRNAs():
 
     return results
 
+
 if __name__ == '__main__':
 
     print("\nWelcome to ncRNA classification\n"
-          "Which model would you like to predict sequences saved in fasta file format?\n"
-          "Merged provides the best results, but requires Graph Features predicted by GraphProt\n"
-          "StrEnc provides the second best result, but requires Structural Encoding created by Pysster\n"
-          "SeqEnc predicts using only the sequence, but does not require additional files\n"
-          "GrEnc predicts using only Graph Encoding, but requires Graph Features predicted by GraphProt\n")
+          "Which model would you like to use to predict ncRNA sequences?\n\n"
+          "Merged\nInputs: Graph Features file created using GraphProt and Fasta file\n"
+          "Provides the overall best results\n\n"
+          "StrEnc\nInput: Structure file created using Pysster\n"
+          "Provides the second best result, highest overall accuracies for tRNA and miRNA\n\n"
+          "SeqEnc\nInput: Sequences in fasta format\n"
+          "Highest accuracy for rRNA, no additional files needed\n\n"
+          "GrEnc\nInput: Graph Features file created using GraphProt\n"
+          "Predicts using only Graph Encoding\n")
 
-    predict_ncRNAs()
+    predict_ncrnas()

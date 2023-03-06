@@ -44,7 +44,6 @@ def test_strenc(structure_input):
 
     structure_df = pd.DataFrame.from_dict({"id": id_list, "structure": structure_list})
 
-
     # Pad the structure sequences to the fixed length of 12,000
     structure_sequences = data_processing.pad_sequences(structure_df.structure, 12000)
     # Encode the structure sequence into integers
@@ -76,7 +75,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Please enter a structure file when running the file\n"
               "Example:\n"
-              "python run_strenc.py pysster_output/small_testset_30_pysster.txt")
+              "python run_strenc.py testing_datasets/small_testset_30_pysster.txt")
     else:
         structure_input = sys.argv[1]
 

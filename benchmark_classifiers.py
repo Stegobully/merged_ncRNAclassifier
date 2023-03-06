@@ -1,9 +1,8 @@
 import os
 import output_analysis
+import predict_ncRNAs
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
-
-import predict_ncRNAs
 
 if __name__ == '__main__':
 
@@ -32,10 +31,10 @@ if __name__ == '__main__':
           "GrEnc predicts using only Graph Encoding, but requires Graph Features predicted by GraphProt\n")
 
     # Run the predictions
-    results = predict_ncRNAs.predict_ncRNAs()
+    results = predict_ncRNAs.predict_ncrnas()
 
     # Prompt the user to enter the file with the labels for each sequence
-    print("Now you will need to provide the labels for each sequence in a txt file.\n"
+    print("\nNow you will need to provide the labels for each sequence in a txt file.\n"
           "This file needs to only contain the RNA types, which for each line needs to be one of\n"
           "lncRNA\\n, miRNA\\n, rRNA\\n, snRNA\\n, snoRNA\\n or tRNA\\n (case sensitive)\n"
           "If you are using the default test files, you may also enter 'default'.")

@@ -37,9 +37,8 @@ def test_merged(fasta_file_input, graph_input):
     # Transform the list of lists of integers into one matrix used as input for the model
     sequence_input = data_processing.transform_seq_into_ml_input(sequence_input)
     # Save the graph features as a matrix
-
     graph_input = np.array(sequence_df.feature_vectors.to_list()).reshape(len(sequence_df.feature_vectors),
-                                                                         len(sequence_df.feature_vectors[0]))
+                                                                          len(sequence_df.feature_vectors[0]))
     # Drop "Seq" and "feature_vector" from data frame to save on memory
     sequence_df.drop(["Seq", "feature_vectors"], axis=1, inplace=True)
 
@@ -70,7 +69,8 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Please enter a fasta file and a graph features file when running the file\n"
               "Example:\n"
-              "python run_merged.py small_testset_30.fasta graphprot_output/small_testset_30_graphprot.feature")
+              "python run_merged.py testing_datasets/small_testset_30.fasta "
+              "testing_datasets/small_testset_30_graphprot.feature")
     else:
         # Identify run parameters
         fasta_file_input = sys.argv[1]

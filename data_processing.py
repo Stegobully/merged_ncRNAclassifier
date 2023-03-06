@@ -3,17 +3,15 @@ import os
 import time
 import numpy as np
 import pandas as pd
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-import tensorflow as tf
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
-from scipy import sparse
 from sklearn.preprocessing import OrdinalEncoder
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
 ########################################################################################################################
+
 
 def read_fasta_file(filename):
     # This function reads in a single fasta file into a dataframe
@@ -22,7 +20,6 @@ def read_fasta_file(filename):
     # To read in all fastas in a folder refer to read_fastas
     # "labels" allows the user to add the rna type
     # to each fasta header and read them into the df as a column
-
 
     sequence_dict = {rec.id: [str(rec.seq).upper()] for rec in SeqIO.parse(filename, "fasta")}
     df = pd.DataFrame.from_dict(sequence_dict, orient="index", columns=["Seq"])
@@ -117,7 +114,7 @@ def pad_sequences(seq_list, length, char="_"):
 
     # Pad sequences on the right with the provided character
     pad_list = seq_list.str.ljust(length, char)
-    # Reduce length of sequences that are to long
+    # Reduce length of sequences that are too long
     pad_list = pad_list.map(lambda x: x[0:length])
 
     return pad_list
@@ -174,10 +171,9 @@ def write_seq_df_to_fasta(df,
                           type_col="rna_type",
                           filename="Sequence_file.fasta",
                           outpath=os.getcwd()):
-    
-    # This function takes a dataframe of the format produced by read_fastas 
-    # and writes the sequences into new fasta files
-    # Fasta files are saved to the file provided in outpath
+
+    # This function takes a dataframe of the format produced by read_fastas
+    # and writes the sequences into new fasta files, which are saved to the file provided in outpath
 
     seq_list = []
     for i in range(0, len(df)):
@@ -213,7 +209,7 @@ def read_ncr_results(path, df, col_name, tabs=True):
                         pred = line.split(",")[1].strip()
                     try:
                         df[col_name][seq_id] = pred
-                    except:
+                    except IndexError:
                         print(f"{seq_id} not found in df")
 
 ########################################################################################################################

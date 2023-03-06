@@ -10,7 +10,7 @@ from sklearn.preprocessing import OneHotEncoder
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def test_grenc(graph_input, fasta_file_input = ""):
+def test_grenc(graph_input, fasta_file_input=""):
 
     # This method loads the trained GrEnc model and tests it on graph features
     # sequence_df is a dataframe that has the sequence IDs as row names and at least one column named "Seq"
@@ -34,15 +34,10 @@ def test_grenc(graph_input, fasta_file_input = ""):
         sequence_df = pd.DataFrame.from_dict({"id": index_list})
         sequence_df.index = index_list
         sequence_df = data_processing.read_graphprot_vectors(sequence_df,
-                                                             graph_input,
-                                                             verbose=False)
-
-
-
-    # Test if number of graph feature vector is the same as number of sequences
+                                                             graph_input)
 
     graph_matrix = np.array(sequence_df.feature_vectors.to_list()).reshape(len(sequence_df.feature_vectors),
-                                                                         len(sequence_df.feature_vectors[0]))
+                                                                           len(sequence_df.feature_vectors[0]))
     # Drop "Seq" and "feature_vector" from data frame to save on memory
     sequence_df.drop(["feature_vectors"], axis=1, inplace=True)
 
@@ -69,15 +64,16 @@ def test_grenc(graph_input, fasta_file_input = ""):
 
 if __name__ == '__main__':
     # Exception for when the command is not properly executed with fasta and feature file
-    if len(sys.argv) not in (2, 3) :
+    if len(sys.argv) not in (2, 3):
         print("Please enter a graph features file when running the file\n"
               "Optionally, you may also enter the fasta file used for the creation of the feature file.\n"
               "If you do not provide the fasta file, the output rows will simply have 'sequence_n' as identifier.\n"
-              "Run the file by providing the path(s) to the input(s) as run parameter(s)"
+              "Run the file by providing the path(s) to the input(s) as run parameter(s)\n\n"
               "Example:\n"
-              "python run_grenc.py graphprot_output/small_testset_30_graphprot.feature\n"
+              "python run_grenc.py testing_datasets/small_testset_30_graphprot.feature\n"
               "or\n"
-              "python run_grenc.py graphprot_output/small_testset_30_graphprot.feature small_testset_30.fasta\n")
+              "python run_grenc.py testing_datasets/small_testset_30_graphprot.feature "
+              "testing_datasets/small_testset_30.fasta\n")
     else:
         graph_input = sys.argv[1]
         if len(sys.argv) == 3:
@@ -91,7 +87,7 @@ if __name__ == '__main__':
         ids, results, pred_probabilities = test_grenc(graph_input, fasta_file_input)
 
         # Save output to file
-        output_file = f"results/{fasta_file_input.split('.')[0]}_grenc_predictions.txt"
+        output_file = f"{graph_input.split('.')[0]}_grenc_predictions.txt"
         output = open(output_file, "w")
         for id, pred, pred_probability in zip(ids, results, pred_probabilities):
             output.write(f"{id}\t{pred}\t{pred_probability}\n")

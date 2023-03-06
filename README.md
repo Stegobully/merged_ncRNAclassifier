@@ -241,16 +241,16 @@ Example:
 `CTGTCGGAGCCGATGTTCTAGCT`
 
 Training and validation data sets for model StrEnc -> `training_datasets/strenc_trainset.txt`; 
-`training_datasets/strenc_valset.txt`
+`training_datasets/strenc_valset.txt`.
 
 Training and validation data sets for model GrEnc -> The Graph Feature files exceed the storage limit, if you wish
 to retrieve the files created by GraphProt please contact either heiko.dunkel@uni-greifswald.de or 
 stefan.simm@uni-greifswald.de. Alternatively, you can create the training and validation sets yourself using GraphProt.
 For how to create the graph encoding, see section [GraphProt](#graphprot) and transform the following files:
-`training_datasets/grenc_trainset.fasta`; `training_datasets/grenc_valset.fasta` 
+`training_datasets/grenc_trainset.fasta`; `training_datasets/grenc_valset.fasta`.
 
 Training and validation data sets for model SeqEnc -> `training_datasets/seqenc_trainset.fasta`; 
-`training_datasets/seqenc_valset.fasta`
+`training_datasets/seqenc_valset.fasta`.
 
 Training and validation data sets for model Merged -> `training_datasets/merged_trainset.fasta`;
 `training_datasets/merged_valset.fasta`. You will also need the Graph Feature files. To retrieve the files created by 
@@ -258,17 +258,19 @@ GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@un
 may create them yourself using the above fasta files (see section [GraphProt](#graphprot))
 
 ### Testing Datasets
-For our benchmarks we used the test set -> `testing_datasets/rnacentral_testset.fasta`
+For our benchmarks we used the test set -> `testing_datasets/rnacentral_testset.fasta`.
+
 For the GrEnc and Merged model, we used the corresponding graph features file. To retrieve the files created by 
 GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@uni-greifswald.de. Alternatively, you 
 may create them yourself using the above fasta file (see section [GraphProt](#graphprot)). 
+
 The corresponding structure encoding created by Pysster can be found in 
 `testing_datasets/rnacentral_testset_structure.txt`. The ncRNA class labels for each sequence in the test sets
 can be found in `testing_datasets/rnacentral_testset_labels.txt`.
 
 The test sets used for comparing the results of our model with that of 
 [ncRDense](https://pubmed.ncbi.nlm.nih.gov/34242708/) are `testing_datasets/rnacentral_testset_used_for_ncrdense.fasta` 
-and `testing_datasets/rfam_testset_used_for_ncrdense.fasta` 
+and `testing_datasets/rfam_testset_used_for_ncrdense.fasta`.
 ([Adapted from Fiannaca et al.](https://biodatamining.biomedcentral.com/articles/10.1186/s13040-017-0148-2)).
 
 In the same folder, you can find `small_testset_30.fasta`, `small_testset_30_graphprot.feature`, 

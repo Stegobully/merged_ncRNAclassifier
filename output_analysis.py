@@ -27,19 +27,22 @@ def plot_confusion_matrix(true, pred):
 
     # This method plots a normalized confusion matrix to a file called "confusion_matrix.png"
 
+    # Create regular confusion matrix
     conf_mat = confusion_matrix(true, pred)
 
+    # Normalize over each row
     conf = []
     for row in conf_mat:
         conf.append(row / sum(row))
 
     rna_types = ["lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA"]
 
+    # Turn into dataframe for melting
     conf = pd.DataFrame(conf, index=rna_types, columns=rna_types)
     conf["rna_type"] = conf.index  # add index column for melting
-    rna_types = ["lncRNA", "miRNA", "rRNA", "snRNA", "snoRNA", "tRNA"]  # desired order of labels
+    # Melt dataframe into three columns, where the predicted class is now a new column
     conf_melt = pd.melt(conf, id_vars="rna_type", ignore_index=True, value_name="Prediction",
-                        var_name="Predicted Class")  # melt into df with 3 columns
+                        var_name="Predicted Class")
     conf_melt["Predicted Class"] = pd.Categorical(conf_melt["Predicted Class"],
                                                   categories=rna_types,
                                                   ordered=True)
@@ -58,9 +61,9 @@ def plot_confusion_matrix(true, pred):
 
     plot = (p9.ggplot(conf_melt, p9.aes('Predicted Class', 'rna_type', fill="Prediction"))
             + p9.geom_tile(p9.aes(width=.95, height=.95))
-            + p9.geom_text(p9.aes(label='pred_string'), size=8, color=text_color, fontweight="bold") # Add labels
-            + p9.scale_y_discrete(limits=list(reversed(rna_types))) # Change order according to preference
-            + p9.scale_fill_distiller(type="seq", palette="OrRd", direction=1, guide=False) # Change color to gradient
+            + p9.geom_text(p9.aes(label='pred_string'), size=8, color=text_color, fontweight="bold")  # Add labels
+            + p9.scale_y_discrete(limits=list(reversed(rna_types)))  # Change order according to preference
+            + p9.scale_fill_distiller(type="seq", palette="OrRd", direction=1, guide=False)  # Change color to gradient
             + p9.xlab("Predicted Label")
             + p9.ylab("True Label")
             + p9.labs(title="Confusion Matrix")
@@ -75,4 +78,4 @@ def plot_confusion_matrix(true, pred):
                 )
             )
     plot.save(filename="confusion_matrix.png", dpi=300)
-    print("The confusion matrix was saved in results/confusion_matrix.png")
+    print("The confusion matrix was saved in confusion_matrix.png")

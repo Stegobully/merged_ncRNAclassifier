@@ -1,21 +1,21 @@
-# Merged_ncRNAclassifier (MncR): Improved late integrated ML-Classifier to predict ncRNA classes using sequence and graph encoded structures
+# Merged_ncRNAclassifier (MncR): Late integration Machine Learning model for classification of ncRNA classes using sequence and structural encoding
 
 # Introduction
 
-The merged_ncRNAclassifier allows you to predict six different classes of non-coding (nc)RNAs. 
+The Merged_ncRNAclassifier (MncR) allows you to predict six different classes of non-coding (nc)RNAs. 
 In comparison to protein coding messenger (m)RNAs, ncRNAs perform a variety of different “housekeeping” and “regulatory" 
 tasks within the cell and can be further classified into ncRNA classes varying based on sequential, functional and/or 
-structural features. Our approach compared the prediction capacity of ML classifiers using different features as input 
+structural features. Our approach compared the prediction capacity of four optimized ML classifiers using different features as input 
 and model architectures based on Convolutional Neural Networks (CNNs) and/or Artificial Neural Networks (ANNs) 
-([Publication](#publication)). Our provided classifiers explained in detail below can predict ncRNAs into one of the 
+([Publication](#publication)). Our provided classifiers (explained in detail below) can predict ncRNAs into one of the 
 six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifiers differentiate in their 
 inputs using either only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using 
 the tool [Pysster](#pysster), graph encoded structural information (GrEnc) using the tool [GraphProt](#graphprot) or 
-the best performing merged model (Merged) combining the primary sequence and structural graph encoded features as input.
+the best performing merged model (MncR) combining the primary sequence and structural graph encoded features as input.
 
 # Installation
 
-We recommend creating a virtual environment with Python >=3.10 for the usage of our merged_ncRNAclassifier. 
+We recommend creating a virtual environment with Python >=3.10 for the usage of our MncR and the other ncRNA classifier. 
 Clone the git repository into your folder, assign it to the virtual environment and make sure you have installed the
 following packages for your virtual environment:
 

@@ -11,7 +11,7 @@ and model architectures based on Convolutional Neural Networks (CNNs) and/or Art
 six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifiers differentiate in their 
 inputs using either only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using 
 the tool [Pysster](#pysster), graph encoded structural information (GrEnc) using the tool [GraphProt](#graphprot) or 
-the best performing merged model (MncR) combining the primary sequence and structural graph encoded features as input.
+the best performing Merged (MncR) model combining the primary sequence and structural graph encoded features as input.
 
 # Installation
 
@@ -52,15 +52,15 @@ the name of the sequence in the input file. The predicted ncRNA type can be "lnc
 "snoRNA" or "tRNA" and the confidence score is between 0 (not confident at all) and 1 (confident) based on the softmax 
 function in the output layer of the ML classifier.
 If you want to use the StrEnc ML classifier in addition to the fasta sequence input, you have to prepare a Pysster 
-format file using [Pysster](#pysster) and for the usage of GrEnc or Merged a [GraphProt](#graphprot) graph feature 
+format file using [Pysster](#pysster) and for the usage of GrEnc or MncR a [GraphProt](#graphprot) graph feature 
 file is required. The individual steps are: 
 
 ## 1. ML classifier choice: You can choose between the following four models, each needing different input for the classification.
-### Merged
+### MncR
 In our benchmark, this classifier had the best overall accuracy and F1-score between all four ML classifiers. 
 Besides the fasta file of ncRNA sequences the classifier requires the graph feature file created by 
 [GraphProt](#graphprot) as input for the classification. For how to create graph feature files see section 
-[GraphProt](#graphprot). For more detailed information about the merged model see [run_merged.py](#run_mergedpy). 
+[GraphProt](#graphprot). For more detailed information about the MncR model see [run_merged.py](#run_mergedpy). 
 ### StrEnc
 In our benchmark, this classifier performed best for the classes tRNA and miRNA with respect to the F1-score and 
 overall second best. The ML classifier needs a structure encoding file based on the fasta file of ncRNA sequences. For 
@@ -84,19 +84,19 @@ about the model see [run_grenc.py](#run_grencpy).
 You will be asked, if you would like to provide the path to the output file. This may either be an absolute path or 
 simply a file name that will be saved in the current working directory. Alternatively, you may also simply press 
 'enter', which will create `[inputname]_[modelname]_predictions.txt`, where `inputname` is simply the name of the input 
-file (fasta input for Merged and SeqEnc; Structure input for StrEnc; Graph Feature input for GrEnc) up until the first 
+file (fasta input for MncR and SeqEnc; Structure input for StrEnc; Graph Feature input for GrEnc) up until the first 
 "." and model name is the name of the model you chose in the previous step.
 
 E.g.: If you chose the SeqEnc model and later 'sequencefile.fasta' as input, the output will be saved in 
 'sequencefile_seqenc_predictions.txt'.
 
-### 3. Input Sequence Files
+## 3. Input Sequence Files
 
-You will be asked to enter the full path and name of the input file or input files for the Merged classifiers. The 
+You will be asked to enter the full path and name of the input file or input files for the ncRNA classifiers. The 
 only requirement to the sequence input is, that it needs to be readable by BioPython's `SeqIO.parse` method. If you 
 type "default" the ML classifier will perform the output on a small subset from test set of our publication including 
 180 sequences (see `merged_test_file_XX `).
-If the ML classifier GrEnc or Merged are selected in step 1 you will need to provide a `.feature`-file created by 
+If the ML classifier GrEnc or MncR are selected in step 1 you will need to provide a `.feature`-file created by 
 GraphProt. If you chose the StrEnc classifier, you will need to provide the path to the output created by pysster. 
 Alternatively, you can also validate the results from out publication. For how to choose the test files used in 
 our results, see [Datasets](#datasetsavailableforretrainingthemodelsandtesting)
@@ -192,7 +192,7 @@ To install GraphProt, refer to https://github.com/dmaticzka/GraphProt. You will 
 
 where path/to/fasta is the path to the fasta file you want to predict and path/to/gspan is a new file that ends in 
 `.gspan.gz`. This will create a new file in the same directory as your gspan file that ends in `.gspan.gz.feature`. 
-This is the graph features file you will need to provide to the Merged and GrEnc models.
+This is the graph features file you will need to provide to the MncR and GrEnc models.
 If you successfully created the `.feature` file, then you are ready to predict the sequences from the fasta file.
 
 
@@ -231,7 +231,7 @@ found in the [Publication](#publication). For the above example, the created inp
 
 ### Training datasets
 Uploaded you find the training and validation fasta and structural files for our best performing models GrEnc, StrEnc, 
-SeqEnc and Merged. The sequences are all downloaded from the [RNAcentral](https://rnacentral.org/) and contain the 
+SeqEnc and MncR. The sequences are all downloaded from the [RNAcentral](https://rnacentral.org/) and contain the 
 RNAcentral identifier, the RNA type and the nucleotide sequence.
 
 Example:
@@ -252,7 +252,7 @@ For how to create the graph encoding, see section [GraphProt](#graphprot) and tr
 Training and validation data sets for model SeqEnc -> `training_datasets/seqenc_trainset.fasta`; 
 `training_datasets/seqenc_valset.fasta`.
 
-Training and validation data sets for model Merged -> `training_datasets/merged_trainset.fasta`;
+Training and validation data sets for model MncR -> `training_datasets/merged_trainset.fasta`;
 `training_datasets/merged_valset.fasta`. You will also need the Graph Feature files. To retrieve the files created by 
 GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@uni-greifswald.de. Alternatively, you 
 may create them yourself using the above fasta files (see section [GraphProt](#graphprot))
@@ -260,7 +260,7 @@ may create them yourself using the above fasta files (see section [GraphProt](#g
 ### Testing Datasets
 For our benchmarks we used the test set -> `testing_datasets/rnacentral_testset.fasta`.
 
-For the GrEnc and Merged model, we used the corresponding graph features file. To retrieve the files created by 
+For the GrEnc and MncR model, we used the corresponding graph features file. To retrieve the files created by 
 GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@uni-greifswald.de. Alternatively, you 
 may create them yourself using the above fasta file (see section [GraphProt](#graphprot)). 
 

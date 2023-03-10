@@ -10,9 +10,9 @@ from sklearn.preprocessing import OneHotEncoder
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def test_merged(fasta_file_input, graph_input):
+def test_mncr(fasta_file_input, graph_input):
 
-    # This method loads the trained Merged model and tests it on sequences and their graph features
+    # This method loads the trained MncR model and tests it on sequences and their graph features
     # sequence_df is a dataframe that has the sequence IDs as row names and at least one column named "Seq"
     # in which Sequences are stored as uppercase Strings including only IUPAC codes for nucleotides
     # graph_input is the path to the file in which the corresponding graph features are saved
@@ -48,7 +48,7 @@ def test_merged(fasta_file_input, graph_input):
     ohe.fit(np.array(rna_types).reshape(-1, 1))
 
     # Load the model
-    model = ks.models.load_model("model_files/merged_fold7.hdf5")
+    model = ks.models.load_model("model_files/mncr_fold7.hdf5")
 
     # Predict the ncRNA types from the two inputs
     prediction = model.predict([sequence_input, graph_input])
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Please enter a fasta file and a graph features file when running the file\n"
               "Example:\n"
-              "python run_merged.py testing_datasets/small_testset_30.fasta "
+              "python run_mncr.py testing_datasets/small_testset_30.fasta "
               "testing_datasets/small_testset_30_graphprot.feature")
     else:
         # Identify run parameters
@@ -77,10 +77,10 @@ if __name__ == '__main__':
         graph_input = sys.argv[2]
 
         # Load and test the model
-        ids, results, pred_probabilities = test_merged(fasta_file_input, graph_input)
+        ids, results, pred_probabilities = test_mncr(fasta_file_input, graph_input)
 
         # Save output to file
-        output_file = f"{fasta_file_input.split('.')[0]}_merged_predictions.txt"
+        output_file = f"{fasta_file_input.split('.')[0]}_mncr_predictions.txt"
         output = open(output_file, "w")
         for id, pred, pred_probability in zip(ids, results, pred_probabilities):
             output.write(f"{id}\t{pred}\t{pred_probability}\n")

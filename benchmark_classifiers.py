@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # The user will first be asked a couple of question to determine what model they want to use,
     # whether they want to test the model with annotated sequences or predict new ones,
     # what sequences (in the form of a fasta file) they want to predict,
-    # and lastly, if they chose Merged or GrEnc, they will have to provide a graph features file.
+    # and lastly, if they chose MncR or GrEnc, they will have to provide a graph features file.
     # If the user wishes to test sequences, the fasta files will need to have the label for each sequence
     # after each identifier (e.g.: >URS00009C41D9_10090 lncRNA) in the fasta file.
     # The model outputs will be saved in a txt file with each sequence identifier and the according probability.
@@ -25,7 +25,7 @@ if __name__ == '__main__':
           "classification_scores.txt and confusion_matrix.png, in which scikit-learn's classification report and\n"
           "a normalized confusion matrix are found.\n\n"
           "Which model would you like to benchmark?\n"
-          "Merged provides the best results, but requires Graph Features predicted by GraphProt\n"
+          "MncR provides the best results, but requires Graph Features predicted by GraphProt\n"
           "StrEnc provides the second best result, but requires Structural Encoding created by Pysster\n"
           "SeqEnc predicts using only the sequence, but does not require additional files\n"
           "GrEnc predicts using only Graph Encoding, but requires Graph Features predicted by GraphProt\n")

@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import run_merged
+import run_mncr
 import run_grenc
 import run_seqenc
 import run_strenc
@@ -11,20 +11,20 @@ def predict_ncrnas():
 
     # The user will first be asked a couple of question to determine what model they want to use
     # what sequences (in the form of a fasta file) they want to predict,
-    # and lastly, if they chose Merged or GrEnc, they will have to provide a graph features file.
+    # and lastly, if they chose MncR or GrEnc, they will have to provide a graph features file.
     # The model outputs will be saved in a txt file with each sequence identifier and the according probability.
 
     # The following code asks the user what model they want to use to predict
     model = "None"
-    while model.upper() not in {"MERGED", "STRENC", "SEQENC", "GRENC"}:
-        model = input("Type one of 'Merged', 'StrEnc', 'SeqEnc' or 'GrEnc'\n")
-        if model.upper() not in {"MERGED", "STRENC", "SEQENC", "GRENC"}:
+    while model.upper() not in {"MNCR", "STRENC", "SEQENC", "GRENC"}:
+        model = input("Type one of 'MncR', 'StrEnc', 'SeqEnc' or 'GrEnc'\n")
+        if model.upper() not in {"MNCR", "STRENC", "SEQENC", "GRENC"}:
             print("\nPlease write one of the model names\n")
     print(f"You chose {model}\n")
 
     # Here the user has to enter the fasta file path if the model requires it
     fasta_file_input = ""
-    if model.upper() in {"MERGED", "SEQENC"}:
+    if model.upper() in {"MNCR", "SEQENC"}:
         print("\nThe model you entered requires a fasta file as input for the prediction.\n\n")
         while not ((os.path.isfile(fasta_file_input) & fasta_file_input.endswith((".fa", ".fasta")))
                    or fasta_file_input.upper() == "DEFAULT"):
@@ -42,7 +42,7 @@ def predict_ncrnas():
                    or graph_input.upper() == "DEFAULT"):
             graph_input = input("Please enter a valid path to a feature file or 'default'\n")
 
-    if model.upper() == "MERGED" and fasta_file_input.upper() != "DEFAULT":
+    if model.upper() == "MNCR" and fasta_file_input.upper() != "DEFAULT":
         print("\nThe model you selected requires a graph features input file.\n"
               "You will now need to enter the path to the corresponding graph feature file created by GraphProt.\n"
               "This file needs to have the ending '.feature'.\n"
@@ -91,11 +91,11 @@ def predict_ncrnas():
           "where 'input_name' is the name of the input file and model is the name of the chosen model.\n")
     output_file = input("Enter the path to the output file or press enter\n")
 
-    # Run the Merged model
-    if model.upper() == "MERGED":
-        ids, results, pred_probabilities = run_merged.test_merged(fasta_file_input, graph_input)
+    # Run the MncR model
+    if model.upper() == "MNCR":
+        ids, results, pred_probabilities = run_mncr.test_mncr(fasta_file_input, graph_input)
         if output_file == "":
-            output_file = f"{fasta_file_input.split('.')[0]}_merged_prediction.txt"
+            output_file = f"{fasta_file_input.split('.')[0]}_mncr_prediction.txt"
 
     # Run the GrEnc model
     elif model.upper() == "GRENC":
@@ -129,7 +129,7 @@ if __name__ == '__main__':
 
     print("\nWelcome to ncRNA classification\n"
           "Which model would you like to use to predict ncRNA sequences?\n\n"
-          "Merged\nInputs: Graph Features file created using GraphProt and Fasta file\n"
+          "MncR\nInputs: Graph Features file created using GraphProt and Fasta file\n"
           "Provides the overall best results\n\n"
           "StrEnc\nInput: Structure file created using Pysster\n"
           "Provides the second best result, highest overall accuracies for tRNA and miRNA\n\n"

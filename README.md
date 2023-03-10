@@ -11,7 +11,7 @@ and model architectures based on Convolutional Neural Networks (CNNs) and/or Art
 six ncRNA classes: lncRNA, miRNA, rRNA, snRNA, snoRNA and tRNA. The different ML classifiers differentiate in their 
 inputs using either only sequential information from the Fasta Sequence (SeqEnc), structural information (StrEnc) using 
 the tool [Pysster](#pysster), graph encoded structural information (GrEnc) using the tool [GraphProt](#graphprot) or 
-the best performing Merged (MncR) model combining the primary sequence and structural graph encoded features as input.
+the best performing MncR model combining the primary sequence and structural graph encoded features as input.
 
 # Installation
 
@@ -35,7 +35,7 @@ following packages for your virtual environment:
 The Git repository contains six different python scripts. To perform a step-by-step manual in the console you 
 can use the `predict_ncRNAs.py`, which allows you to choose between the four different ML classifiers. If you prefer a 
 specific ML classifier you can also directly use one of the four provided scripts for the different 
-models: run_strenc.py, run_grenc.py, run_seqenc.py or run_merged.py. If you want to benchmark your tool against our ML 
+models: `run_strenc.py`, `run_grenc.py`, `run_seqenc.py` or `run_mncr.py`. If you want to benchmark your tool against our ML 
 classifier you can use the python script `benchmark_classifiers.py`, which additionally to the functions of 
 `predict_ncRNAs.py` also adds the additional output of the prediction scores (Precision, Recall, F1, Matthews 
 Correlation Coefficient). This script requires the labels of each sequence to be provided in the fasta file headers, 
@@ -60,7 +60,7 @@ file is required. The individual steps are:
 In our benchmark, this classifier had the best overall accuracy and F1-score between all four ML classifiers. 
 Besides the fasta file of ncRNA sequences the classifier requires the graph feature file created by 
 [GraphProt](#graphprot) as input for the classification. For how to create graph feature files see section 
-[GraphProt](#graphprot). For more detailed information about the MncR model see [run_merged.py](#run_mergedpy). 
+[GraphProt](#graphprot). For more detailed information about the MncR model see [run_mncr.py](#run_mncrpy). 
 ### StrEnc
 In our benchmark, this classifier performed best for the classes tRNA and miRNA with respect to the F1-score and 
 overall second best. The ML classifier needs a structure encoding file based on the fasta file of ncRNA sequences. For 
@@ -95,7 +95,7 @@ E.g.: If you chose the SeqEnc model and later 'sequencefile.fasta' as input, the
 You will be asked to enter the full path and name of the input file or input files for the ncRNA classifiers. The 
 only requirement to the sequence input is, that it needs to be readable by BioPython's `SeqIO.parse` method. If you 
 type "default" the ML classifier will perform the output on a small subset from test set of our publication including 
-180 sequences (see `merged_test_file_XX `).
+180 sequences (see `testing_datasets/small_testset_30.fasta `).
 If the ML classifier GrEnc or MncR are selected in step 1 you will need to provide a `.feature`-file created by 
 GraphProt. If you chose the StrEnc classifier, you will need to provide the path to the output created by pysster. 
 Alternatively, you can also validate the results from out publication. For how to choose the test files used in 
@@ -105,16 +105,16 @@ our results, see [Datasets](#datasetsavailableforretrainingthemodelsandtesting)
 # Standalone versions of the ML classifiers able to select in the python script `predict_ncRNAs.py`:
 
 
-## `run_merged.py`
+## `run_mncr.py`
 This model uses a late integration of the GrEnc and SeqEnc model by concatenating them within the last hidden layer 
 before the softmax output layer. The SeqEnc model consists of a convolutional neural network (CNN) for the sequence 
 input and the GrEnc a fully connected neural network (NN) for the GraphProt input. The graph input file and fasta file 
 need to have the same order of sequences in the input files. Both files need to be provided as a run parameter when 
 executing the python script. If you are interested in the exact architecture of the network load 
-`models/merged_fold7.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. 
+`models/mncr_fold7.hdf5` in a python script using keras' `load_model()` method and run `model.summary()`. 
 Alternatively, you can find the architecture described in the [Publication](#publication). 
 
-Example call: `python test_merged.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
+Example call: `python test_mncr.py path/to/fasta.fasta path/to/graph_enc.gspan.gz.feature`
 
 ## `run_strenc.py`
 This model uses the structure encoding created by [pysster](#pysster) combined with the primary sequence as input. 
@@ -252,8 +252,8 @@ For how to create the graph encoding, see section [GraphProt](#graphprot) and tr
 Training and validation data sets for model SeqEnc -> `training_datasets/seqenc_trainset.fasta`; 
 `training_datasets/seqenc_valset.fasta`.
 
-Training and validation data sets for model MncR -> `training_datasets/merged_trainset.fasta`;
-`training_datasets/merged_valset.fasta`. You will also need the Graph Feature files. To retrieve the files created by 
+Training and validation data sets for model MncR -> `training_datasets/mncr_trainset.fasta`;
+`training_datasets/mncr_valset.fasta`. You will also need the Graph Feature files. To retrieve the files created by 
 GraphProt please contact either heiko.dunkel@uni-greifswald.de or stefan.simm@uni-greifswald.de. Alternatively, you 
 may create them yourself using the above fasta files (see section [GraphProt](#graphprot))
 

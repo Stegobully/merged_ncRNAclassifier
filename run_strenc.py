@@ -29,7 +29,7 @@ def test_strenc(structure_input):
     for line in lines:
         # Read in identifiers
         if i % 3 == 0:
-            id_list.append(line.strip(">").split(" ")[0])
+            id_list.append(line.strip(">").split(" ")[0].strip("\n"))
         # Save the most recent nucleotide sequence
         elif i % 3 == 1:
             sequence = line.strip("\n")

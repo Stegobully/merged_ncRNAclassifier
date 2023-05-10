@@ -211,13 +211,17 @@ the file you will have to provide when choosing the StrEnc model. Before using t
 output is of the following format:
 
 `>sequence name`
+
 `nucleotide sequence`
+
 `structure sequence`
 
 Example: 
 
 `>URS0000CB8740_9606`
+
 `ATCTGCTCGCCGGAGCTCACTCT`
+
 `FFFFSSSSHHHHSSSSTTTTTTT`
 
 Every third line needs to contain the structure sequence made up of one of the six structure codes (5'-End: "F"; Stem: 

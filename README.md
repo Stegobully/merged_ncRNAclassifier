@@ -29,6 +29,7 @@ following packages for your virtual environment:
 |numpy   |1.24.1   |
 |scipy   |1.10.0   |
 |scikit-learn   |1.2.1   |
+|Biopython |1.80 |
 |plotnine   |0.10.1   |
 
 # How to use

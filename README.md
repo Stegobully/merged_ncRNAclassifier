@@ -284,8 +284,9 @@ and are used as default cases when testing the models using `predict_ncRNAs.py` 
 
 
 # Publication
-
-XXXXXXXXXXXXXX Insert Link to Publication here
+Heiko Dunkel, Henning Wehrmann, Lars R. Jensen, Andreas W. Kuss, Stefan Simm
+### MncR: Late Integration Machine Learning Model for Classification of ncRNA Classes Using Sequence and Structural Encoding 
+Int. J. Mol. Sci. 2023, 24(10), 8884; https://doi.org/10.3390/ijms24108884 
 
 
 
